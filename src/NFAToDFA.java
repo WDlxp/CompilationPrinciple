@@ -44,7 +44,7 @@ public class NFAToDFA {
     /**
      * NFA转DFA
      *
-     * @param nfa
+     * @param nfa 传入NFA
      */
     static void changeNFAToDFA(SuffixToNFA.NFA nfa) {
         List<Integer> stateList = nfa.getStateList();
@@ -70,8 +70,8 @@ public class NFAToDFA {
             hashSets[state - 1][characterIndex] = hashSet;
         }
 
-        /**
-         * 打印转移矩阵
+        /*
+          打印转移矩阵
          */
         System.out.println("状态转移矩阵：");
         System.out.print("\t");
