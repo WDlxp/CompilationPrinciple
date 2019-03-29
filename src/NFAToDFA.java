@@ -80,14 +80,14 @@ public class NFAToDFA {
         }
         System.out.println("");
         int stateIndex=-1;
-        for (int j = 0; j < hashSets.length; j++) {
-            System.out.print(stateList.get(++stateIndex)+"\t");
-            for (int k = 0; k < hashSets[j].length; k++) {
-                if (hashSets[j][k] != null) {
-                    for (int states : hashSets[j][k]) {
-                        System.out.print(" "+states + "  \t");
+        for (HashSet<Integer>[] hashSet : hashSets) {
+            System.out.print(stateList.get(++stateIndex) + "\t");
+            for (HashSet<Integer> integers : hashSet) {
+                if (integers != null) {
+                    for (int states : integers) {
+                        System.out.print(" " + states + "  \t");
                     }
-                }else {
+                } else {
                     System.out.print("null\t");
                 }
             }
