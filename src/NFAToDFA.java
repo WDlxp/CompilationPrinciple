@@ -70,6 +70,9 @@ public class NFAToDFA {
             hashSets[state - 1][characterIndex] = hashSet;
         }
 
+        /**
+         * 打印转移矩阵
+         */
         System.out.print("\t");
         for (char ch:characterSet){
             System.out.print(" "+ch+"  \t");
