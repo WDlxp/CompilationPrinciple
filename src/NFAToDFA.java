@@ -1,7 +1,12 @@
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+
 /**
  * NFA转DFA
  * 思路：
- *将三元组转换成二维转移矩阵
+ * 将三元组转换成二维转移矩阵
+ *
  * @author wdl
  */
 public class NFAToDFA {
@@ -32,6 +37,57 @@ public class NFAToDFA {
             System.out.println("结束状态:" + nfa.getStateList().get(nfa.getFinishIndex()));
         } else {
             System.out.println("输入有误");
+        }
+        changeNFAToDFA(nfa);
+    }
+
+    /**
+     * NFA转DFA
+     *
+     * @param nfa
+     */
+    static void changeNFAToDFA(SuffixToNFA.NFA nfa) {
+        List<Integer> stateList = nfa.getStateList();
+        HashSet<Character> characterSet = nfa.getCharacterSet();
+        char[] characterStrings = new char[characterSet.size()];
+        int i = -1;
+        for (char ch : characterSet) {
+            characterStrings[++i] = ch;
+        }
+        HashSet<Integer>[][] hashSets = new HashSet[stateList.size()][characterSet.size()];
+
+        for (SuffixToNFA.Side side : nfa.getMoveList()) {
+            HashSet<Integer> hashSet = new HashSet<>();
+            int state = side.getPreState();
+            char ch = side.getTransferCondition();
+            int characterIndex = -1;
+            while (true) {
+                if (characterStrings[++characterIndex] == ch) {
+                    break;
+                }
+            }
+            hashSet.add(side.getNextState());
+            hashSets[state - 1][characterIndex] = hashSet;
+        }
+
+        System.out.print("\t");
+        for (char ch:characterSet){
+            System.out.print(" "+ch+"  \t");
+        }
+        System.out.println("");
+        int stateIndex=-1;
+        for (int j = 0; j < hashSets.length; j++) {
+            System.out.print(stateList.get(++stateIndex)+"\t");
+            for (int k = 0; k < hashSets[j].length; k++) {
+                if (hashSets[j][k] != null) {
+                    for (int states : hashSets[j][k]) {
+                        System.out.print(" "+states + "  \t");
+                    }
+                }else {
+                    System.out.print("null\t");
+                }
+            }
+            System.out.println("");
         }
     }
 }
