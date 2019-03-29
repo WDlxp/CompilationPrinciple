@@ -14,6 +14,7 @@ import java.util.*;
  * @author wdl
  */
 public class SuffixToNFA {
+    /*
     public static void main(String[] args) {
         String string = "(((a b|b )*(ab|c.d))*)*";
         StringBuilder result = new StringBuilder();
@@ -40,7 +41,7 @@ public class SuffixToNFA {
         } else {
             System.out.println("输入有误");
         }
-    }
+    }*/
 
     /**
      * 记录边的三元组

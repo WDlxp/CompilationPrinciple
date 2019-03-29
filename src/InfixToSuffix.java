@@ -20,6 +20,10 @@
 import java.util.Stack;
 
 public class InfixToSuffix {
+    /**
+     * 代码测试使用
+     * @param args
+     */
     public static void main(String[] args) {
         String string = "(a b|e.d)|abcd*";
         StringBuilder result = new StringBuilder();

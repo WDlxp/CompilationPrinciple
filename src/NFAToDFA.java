@@ -10,6 +10,10 @@ import java.util.List;
  * @author wdl
  */
 public class NFAToDFA {
+    /**
+     * 测试代码使用
+     * @param args
+     */
     public static void main(String[] args) {
         String string = "(((a b|b )*(ab|c.d))*)*";
         StringBuilder result = new StringBuilder();
@@ -57,7 +61,7 @@ public class NFAToDFA {
         HashSet<Integer>[][] hashSets = new HashSet[stateList.size()][characterSet.size()];
 
         for (SuffixToNFA.Side side : nfa.getMoveList()) {
-            HashSet<Integer> hashSet = new HashSet<>();
+            /*获取当前需要添加的位置下标*/
             int state = side.getPreState();
             char ch = side.getTransferCondition();
             int characterIndex = -1;
@@ -66,8 +70,16 @@ public class NFAToDFA {
                     break;
                 }
             }
-            hashSet.add(side.getNextState());
-            hashSets[state - 1][characterIndex] = hashSet;
+            /*
+            判断当前位置是否为空，为空则创建新的HashSet加入，不为空则直接在原有基础上加入
+             */
+            if (hashSets[state - 1][characterIndex]==null){
+                HashSet<Integer> hashSet = new HashSet<>();
+                hashSet.add(side.getNextState());
+                hashSets[state - 1][characterIndex]=hashSet;
+            }else {
+                hashSets[state - 1][characterIndex].add(side.getNextState());
+            }
         }
 
         /*
@@ -85,8 +97,9 @@ public class NFAToDFA {
             for (HashSet<Integer> integers : hashSet) {
                 if (integers != null) {
                     for (int states : integers) {
-                        System.out.print(" " + states + "  \t");
+                        System.out.print( states + " ");
                     }
+                    System.out.print("  \t");
                 } else {
                     System.out.print("null\t");
                 }
