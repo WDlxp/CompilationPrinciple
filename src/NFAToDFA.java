@@ -73,6 +73,7 @@ public class NFAToDFA {
         /**
          * 打印转移矩阵
          */
+        System.out.println("状态转移矩阵：");
         System.out.print("\t");
         for (char ch:characterSet){
             System.out.print(" "+ch+"  \t");
