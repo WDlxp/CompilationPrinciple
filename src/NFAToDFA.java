@@ -73,12 +73,12 @@ public class NFAToDFA {
             /*
             判断当前位置是否为空，为空则创建新的HashSet加入，不为空则直接在原有基础上加入
              */
-            if (hashSets[state - 1][characterIndex]==null){
+            if (hashSets[state][characterIndex]==null){
                 HashSet<Integer> hashSet = new HashSet<>();
                 hashSet.add(side.getNextState());
-                hashSets[state - 1][characterIndex]=hashSet;
+                hashSets[state][characterIndex]=hashSet;
             }else {
-                hashSets[state - 1][characterIndex].add(side.getNextState());
+                hashSets[state][characterIndex].add(side.getNextState());
             }
         }
 
@@ -106,5 +106,11 @@ public class NFAToDFA {
             }
             System.out.println("");
         }
+
+        /*
+          去除空转移
+         */
+
+
     }
 }

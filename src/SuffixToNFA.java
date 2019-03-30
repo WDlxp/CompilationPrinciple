@@ -128,7 +128,7 @@ public class SuffixToNFA {
         /* 存放NFA的栈 */
         Stack<NFA> nfaStack = new Stack<>();
         /* 状态的个数防止状态重名 */
-        int stateCount = 0;
+        int stateCount = -1;
         /* 用于记录*连续出现的次数，连续出现仅计算第一次 */
         int count = 0;
 
