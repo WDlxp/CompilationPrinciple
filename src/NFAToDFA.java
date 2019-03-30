@@ -12,6 +12,7 @@ import java.util.List;
 public class NFAToDFA {
     /**
      * 测试代码使用
+     *
      * @param args
      */
     public static void main(String[] args) {
@@ -54,10 +55,16 @@ public class NFAToDFA {
         List<Integer> stateList = nfa.getStateList();
         HashSet<Character> characterSet = nfa.getCharacterSet();
         char[] characterStrings = new char[characterSet.size()];
+        /* 用于记录是否为终态 */
+        boolean[] isFinishState = new boolean[stateList.size()];
+        /* 终态初始化 */
+        isFinishState[nfa.getFinishIndex()]=true;
+        /* 将set集合转化为String数组 */
         int i = -1;
         for (char ch : characterSet) {
             characterStrings[++i] = ch;
         }
+        /* 使用HashSet作为转移矩阵 */
         HashSet<Integer>[][] hashSets = new HashSet[stateList.size()][characterSet.size()];
 
         for (SuffixToNFA.Side side : nfa.getMoveList()) {
@@ -73,11 +80,11 @@ public class NFAToDFA {
             /*
             判断当前位置是否为空，为空则创建新的HashSet加入，不为空则直接在原有基础上加入
              */
-            if (hashSets[state][characterIndex]==null){
+            if (hashSets[state][characterIndex] == null) {
                 HashSet<Integer> hashSet = new HashSet<>();
                 hashSet.add(side.getNextState());
-                hashSets[state][characterIndex]=hashSet;
-            }else {
+                hashSets[state][characterIndex] = hashSet;
+            } else {
                 hashSets[state][characterIndex].add(side.getNextState());
             }
         }
@@ -87,17 +94,17 @@ public class NFAToDFA {
          */
         System.out.println("状态转移矩阵：");
         System.out.print("\t");
-        for (char ch:characterSet){
-            System.out.print(" "+ch+"  \t");
+        for (char ch : characterSet) {
+            System.out.print(" " + ch + "  \t");
         }
         System.out.println("");
-        int stateIndex=-1;
+        int stateIndex = -1;
         for (HashSet<Integer>[] hashSet : hashSets) {
             System.out.print(stateList.get(++stateIndex) + "\t");
             for (HashSet<Integer> integers : hashSet) {
                 if (integers != null) {
                     for (int states : integers) {
-                        System.out.print( states + " ");
+                        System.out.print(states + " ");
                     }
                     System.out.print("  \t");
                 } else {
