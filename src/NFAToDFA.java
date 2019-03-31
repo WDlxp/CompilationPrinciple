@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -113,8 +114,72 @@ public class NFAToDFA {
         printMoveSet(characterSet, stateList, hashSets, isFinishState);
 
         /*3.整理转移矩阵形成DFA*/
+        HashSet<Integer>[][] hashSetsDFA = new HashSet[stateList.size() * 2][characterSet.size() + 1];
+        boolean[] isFinishStateDFA = new boolean[stateList.size() * 2];
+        int newStateIndexCount = 0;
+        /* 初始化第一行 */
+        int startState = nfa.getStartIndex();
+        hashSetsDFA[0][characterSet.size()] = new HashSet();
+        hashSetsDFA[0][characterSet.size()].add(startState);
+        for (int k = 0; k < characterStrings.length; k++) {
+            if (hashSets[startState][k] != null && !hashSets[startState][k].isEmpty()) {
+                hashSetsDFA[0][k] = new HashSet<>();
+                hashSetsDFA[0][k].addAll(hashSets[startState][k]);
+            }
+        }
+        isFinishStateDFA[0] = isFinishState[startState];
+        for (int i1 = 0; i1 <= newStateIndexCount; i1++) {
+            for (int j = 0; j < characterStrings.length; j++) {
+                if (hashSetsDFA[i1][j] != null && !hashSetsDFA[i1][j].isEmpty()) {
+                    boolean isExits = false;
+                    for (int l = 0; l <= newStateIndexCount; l++) {
+                        //说明状态已经存在
+                        if (hashSetsDFA[l][characterStrings.length].equals(hashSetsDFA[i1][j])) {
+                            isExits = true;
+                            break;
+                        }
+                    }
+                    if (!isExits) {
+                        newStateIndexCount++;
+                        hashSetsDFA[newStateIndexCount][characterSet.size()] = new HashSet<>();
+                        hashSetsDFA[newStateIndexCount][characterSet.size()].addAll(hashSetsDFA[i1][j]);
+                        for (int state : hashSetsDFA[i1][j]) {
+                            for (int k = 0; k < characterStrings.length; k++) {
+                                if (hashSets[state][k] != null && !hashSets[state][k].isEmpty()) {
+                                    if (hashSetsDFA[newStateIndexCount][k] == null) {
+                                        hashSetsDFA[newStateIndexCount][k] = new HashSet<>();
+                                    }
+                                    hashSetsDFA[newStateIndexCount][k].addAll(hashSets[state][k]);
+                                }
+                            }
+                            isFinishStateDFA[newStateIndexCount] = isFinishStateDFA[newStateIndexCount] || isFinishState[state];
+                        }
+                    }
+                }
+            }
+        }
 
 
+        System.out.println("整理后的转移矩阵");
+        for (int k = 0; k <= newStateIndexCount; k++) {
+            HashSet<Integer>[] hashSet = hashSetsDFA[k];
+            for (HashSet<Integer> integers : hashSet) {
+                if (integers != null) {
+                    if (integers.isEmpty()) {
+                        System.out.print("null\t");
+                    } else {
+                        for (int states : integers) {
+                            System.out.print(states + " ");
+                        }
+                        System.out.print("  \t");
+                    }
+                } else {
+                    System.out.print("null\t");
+                }
+            }
+            System.out.println(isFinishStateDFA[k]);
+        }
+        /*4.DFA最小化*/
     }
 
     /**
