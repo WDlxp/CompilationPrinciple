@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -43,7 +42,7 @@ public class NFAToDFA {
         } else {
             System.out.println("输入有误");
         }
-        changeNFAToDFA(nfa);
+        NFAToDFA.changeNFAToDFA(nfa);
     }
 
     /**
@@ -55,9 +54,11 @@ public class NFAToDFA {
         List<Integer> stateList = nfa.getStateList();
         HashSet<Character> characterSet = nfa.getCharacterSet();
         char[] characterStrings = new char[characterSet.size()];
+
         /* 用于记录是否为终态 */
         boolean[] isFinishState = new boolean[stateList.size()];
         /* 终态初始化 */
+
         isFinishState[nfa.getFinishIndex()]=true;
         /* 将set集合转化为String数组 */
         int i = -1;
@@ -89,15 +90,52 @@ public class NFAToDFA {
             }
         }
 
-        /*
-          打印转移矩阵
-         */
+
+        /*打印转移矩阵*/
+        printMoveSet(characterSet,stateList,hashSets,isFinishState);
+
+        /*去除空转移*/
+
+        /* 找出ε所在的列下标 */
+        int tempIndex=-1;
+        for (int charIndex=0;charIndex<characterStrings.length;charIndex++){
+            if (characterStrings[charIndex]=='ε'){
+                tempIndex=charIndex;
+                break;
+            }
+        }
+        /* 说明在字符中无空转移了 */
+        if (tempIndex==-1){
+            return ;
+        }
+        for (int index=0;index<stateList.size();index++){
+            HashSet<Integer> tempToStateSet=hashSets[index][tempIndex];
+            if (tempToStateSet==null){
+
+            }else {
+                if (tempToStateSet.isEmpty()){
+
+                }else {
+
+                }
+            }
+        }
+    }
+
+    /**
+     * 打印状态转移矩阵
+     * @param characterSet 字符集
+     * @param stateList 状态集
+     * @param hashSets 转移矩阵
+     * @param isFinishState 是否为终态的标记数组
+     */
+    static void printMoveSet(HashSet<Character> characterSet, List<Integer> stateList,HashSet<Integer>[][] hashSets,boolean[] isFinishState){
         System.out.println("状态转移矩阵：");
         System.out.print("\t");
         for (char ch : characterSet) {
             System.out.print(" " + ch + "  \t");
         }
-        System.out.println("");
+        System.out.println("终态");
         int stateIndex = -1;
         for (HashSet<Integer>[] hashSet : hashSets) {
             System.out.print(stateList.get(++stateIndex) + "\t");
@@ -111,13 +149,7 @@ public class NFAToDFA {
                     System.out.print("null\t");
                 }
             }
-            System.out.println("");
+            System.out.println(isFinishState[stateIndex]);
         }
-
-        /*
-          去除空转移
-         */
-
-
     }
 }
