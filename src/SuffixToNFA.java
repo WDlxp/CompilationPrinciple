@@ -23,26 +23,29 @@ public class SuffixToNFA {
         if (InfixToSuffix.change(string, result) == 0) {
             System.out.println("后缀表达式：" + result.toString());
             NFA nfa = changeSuffixToNfa(result.toString());
-            System.out.println("NFA为：");
-            System.out.println("状态集：");
-            for (int i : nfa.getStateList()) {
-                System.out.print(i + "\t");
-            }
-            System.out.println("\n字符集：");
-            for (char ch : nfa.getCharacterSet()) {
-                System.out.print(ch + "\t");
-            }
-            System.out.println("\n转移集（边）：");
-            for (Side side : nfa.getMoveList()) {
-                System.out.print("(" + side.preState + "," + side.nextState + "," + side.transferCondition + ")");
-            }
-            System.out.println("\n起始状态:" + nfa.getStateList().get(nfa.getStartIndex()));
-            System.out.println("结束状态:" + nfa.getStateList().get(nfa.getFinishIndex()));
+           printNFA(nfa);
         } else {
             System.out.println("输入有误");
         }
     }
 
+    static void printNFA(NFA nfa){
+        System.out.println("NFA为：");
+        System.out.println("状态集：");
+        for (int i : nfa.getStateList()) {
+            System.out.print(i + "\t");
+        }
+        System.out.println("\n字符集：");
+        for (char ch : nfa.getCharacterSet()) {
+            System.out.print(ch + "\t");
+        }
+        System.out.println("\n转移集（边）：");
+        for (Side side : nfa.getMoveList()) {
+            System.out.print("(" + side.preState + "," + side.nextState + "," + side.transferCondition + ")");
+        }
+        System.out.println("\n起始状态:" + nfa.getStateList().get(nfa.getStartIndex()));
+        System.out.println("结束状态:" + nfa.getStateList().get(nfa.getFinishIndex()));
+    }
     /**
      * 记录边的三元组
      * 前一个状态preState
