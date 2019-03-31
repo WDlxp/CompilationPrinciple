@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -17,6 +18,7 @@ public class NFAToDFA {
      */
     public static void main(String[] args) {
         String string = "(((a b|b )*(ab|c.d))*)*";
+//        string = "(ab|b)*ab";
         StringBuilder result = new StringBuilder();
         System.out.println("正规式为：" + string);
 
@@ -58,9 +60,10 @@ public class NFAToDFA {
 
         /* 用于记录是否为终态 */
         boolean[] isFinishState = new boolean[stateList.size()];
-        /* 终态初始化 */
 
+        /* 终态初始化 */
         isFinishState[nfa.getFinishIndex()] = true;
+
         /* 将set集合转化为String数组 */
         int i = -1;
         for (char ch : characterSet) {
@@ -110,6 +113,33 @@ public class NFAToDFA {
             return;
         }
         int tempCount = 0;
+        /*
+        第一种思路每次找到空转移为空的状态，遍历查找含该状态空转移的状态的消除
+        while (tempCount < stateList.size()) {
+            tempCount = 0;
+            for (int index = 0; index < stateList.size(); index++) {
+                HashSet<Integer> tempToStateSet = hashSets[index][tempIndex];
+                if (tempToStateSet == null || tempToStateSet.isEmpty()) {
+                    tempCount++;
+                    for (int i1 = 0; i1 < stateList.size(); i1++) {
+                        if (hashSets[i1][tempIndex] != null && hashSets[i1][tempIndex].contains(index)) {
+                            for (int k = 0; k < characterStrings.length; k++) {
+                                if (hashSets[index][k] != null && !hashSets[index][k].isEmpty()) {
+                                    if (hashSets[i1][k] == null) {
+                                        hashSets[i1][k] = new HashSet<>();
+                                    }
+                                    hashSets[i1][k].addAll(hashSets[index][k]);
+                                }
+                            }
+                            isFinishState[i1] = isFinishState[i1] || isFinishState[index];
+                            hashSets[i1][tempIndex].remove(index);
+                        }
+                    }
+                }
+            }
+        }*/
+
+        /* 第二种思路，每次找控转移非空的状态，根据控转移下的状态查找对应状态是否可合并过来 */
         while (tempCount < stateList.size()) {
             tempCount = 0;
             for (int index = 0; index < stateList.size(); index++) {
@@ -117,26 +147,22 @@ public class NFAToDFA {
                 if (tempToStateSet == null || tempToStateSet.isEmpty()) {
                     tempCount++;
                 } else {
-                    List<Integer> remove = new ArrayList<>();
-                    for (int state : tempToStateSet) {
+                    Iterator<Integer> it = tempToStateSet.iterator();
+                    while (it.hasNext()) {
+                        int state = it.next();
                         if (hashSets[state][tempIndex] == null || hashSets[state][tempIndex].isEmpty()) {
                             for (int k = 0; k < characterStrings.length; k++) {
-                                if (hashSets[index][k] == null) {
-                                    if (hashSets[state][k] != null) {
-                                        hashSets[index][k] = hashSets[state][k];
+                                if (hashSets[state][k] != null && !hashSets[state][k].isEmpty()) {
+                                    if (hashSets[index][k] == null) {
+                                        hashSets[index][k] = new HashSet<>();
                                     }
-                                } else {
-                                    if (hashSets[state][k] != null) {
-                                        hashSets[index][k].addAll(hashSets[state][k]);
-                                    }
+                                    hashSets[index][k].addAll(hashSets[state][k]);
+
                                 }
                             }
                             isFinishState[index] = isFinishState[index] || isFinishState[state];
-                            remove.add(state);
+                            it.remove();
                         }
-                    }
-                    for (int state : remove) {
-                        tempToStateSet.remove(state);
                     }
                 }
             }
