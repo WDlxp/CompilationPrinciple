@@ -123,15 +123,7 @@ public class NFAToDFA {
                     tempCount++;
                     for (int i1 = 0; i1 < stateList.size(); i1++) {
                         if (hashSets[i1][tempIndex] != null && hashSets[i1][tempIndex].contains(index)) {
-                            for (int k = 0; k < characterStrings.length; k++) {
-                                if (hashSets[index][k] != null && !hashSets[index][k].isEmpty()) {
-                                    if (hashSets[i1][k] == null) {
-                                        hashSets[i1][k] = new HashSet<>();
-                                    }
-                                    hashSets[i1][k].addAll(hashSets[index][k]);
-                                }
-                            }
-                            isFinishState[i1] = isFinishState[i1] || isFinishState[index];
+                            mergeTwoRows(characterStrings,hashSets,isFinishState,i1,index);
                             hashSets[i1][tempIndex].remove(index);
                         }
                     }
@@ -139,7 +131,7 @@ public class NFAToDFA {
             }
         }*/
 
-        /* 第二种思路，每次找控转移非空的状态，根据控转移下的状态查找对应状态是否可合并过来 */
+        /* 第二种思路，每次找控转移非空的状态，根据控转移下的状态查找对应状态是否可合并过来*/
         while (tempCount < stateList.size()) {
             tempCount = 0;
             for (int index = 0; index < stateList.size(); index++) {
@@ -151,16 +143,7 @@ public class NFAToDFA {
                     while (it.hasNext()) {
                         int state = it.next();
                         if (hashSets[state][tempIndex] == null || hashSets[state][tempIndex].isEmpty()) {
-                            for (int k = 0; k < characterStrings.length; k++) {
-                                if (hashSets[state][k] != null && !hashSets[state][k].isEmpty()) {
-                                    if (hashSets[index][k] == null) {
-                                        hashSets[index][k] = new HashSet<>();
-                                    }
-                                    hashSets[index][k].addAll(hashSets[state][k]);
-
-                                }
-                            }
-                            isFinishState[index] = isFinishState[index] || isFinishState[state];
+                            mergeTwoRows(characterStrings, hashSets, isFinishState, index, state);
                             it.remove();
                         }
                     }
@@ -179,7 +162,7 @@ public class NFAToDFA {
      * @param hashSets      转移矩阵
      * @param isFinishState 是否为终态的标记数组
      */
-    static void printMoveSet(HashSet<Character> characterSet, List<Integer> stateList, HashSet<Integer>[][] hashSets, boolean[] isFinishState) {
+    private static void printMoveSet(HashSet<Character> characterSet, List<Integer> stateList, HashSet<Integer>[][] hashSets, boolean[] isFinishState) {
         System.out.println("状态转移矩阵：");
         System.out.print("\t");
         for (char ch : characterSet) {
@@ -205,5 +188,25 @@ public class NFAToDFA {
             }
             System.out.println(isFinishState[stateIndex]);
         }
+    }
+
+    /**
+     * 将第二行合并到第一行
+     * @param characterStrings 字符集
+     * @param hashSets         转移矩阵
+     * @param isFinishState    是否终态标志
+     * @param firstState       第一个状态
+     * @param secondState      第二个状态
+     */
+    private static void mergeTwoRows(char[] characterStrings, HashSet<Integer>[][] hashSets, boolean[] isFinishState, int firstState, int secondState) {
+        for (int k = 0; k < characterStrings.length; k++) {
+            if (hashSets[secondState][k] != null && !hashSets[secondState][k].isEmpty()) {
+                if (hashSets[firstState][k] == null) {
+                    hashSets[firstState][k] = new HashSet<>();
+                }
+                hashSets[firstState][k].addAll(hashSets[secondState][k]);
+            }
+        }
+        isFinishState[firstState] = isFinishState[firstState] || isFinishState[secondState];
     }
 }
