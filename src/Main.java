@@ -1,3 +1,6 @@
+import javax.print.DocFlavor;
+import java.util.HashSet;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -7,5 +10,17 @@ public class Main {
         for (boolean i:isFinishState){
             System.out.println(i);
         }
+        HashSet<Integer> hashSet=new HashSet();
+        hashSet.add(1);
+        hashSet.add(2);
+        hashSet.add(3);
+
+        HashSet<Integer> hashSet1=new HashSet();
+        hashSet1.add(3);
+        hashSet1.add(2);
+        hashSet1.add(1);
+
+        System.out.println(hashSet.equals(hashSet1));
+        System.out.println(hashSet.size()==hashSet1.size());
     }
 }
