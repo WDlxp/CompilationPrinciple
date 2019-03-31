@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -59,7 +60,7 @@ public class NFAToDFA {
         boolean[] isFinishState = new boolean[stateList.size()];
         /* 终态初始化 */
 
-        isFinishState[nfa.getFinishIndex()]=true;
+        isFinishState[nfa.getFinishIndex()] = true;
         /* 将set集合转化为String数组 */
         int i = -1;
         for (char ch : characterSet) {
@@ -92,44 +93,67 @@ public class NFAToDFA {
 
 
         /*打印转移矩阵*/
-        printMoveSet(characterSet,stateList,hashSets,isFinishState);
+        printMoveSet(characterSet, stateList, hashSets, isFinishState);
 
         /*去除空转移*/
 
         /* 找出ε所在的列下标 */
-        int tempIndex=-1;
-        for (int charIndex=0;charIndex<characterStrings.length;charIndex++){
-            if (characterStrings[charIndex]=='ε'){
-                tempIndex=charIndex;
+        int tempIndex = -1;
+        for (int charIndex = 0; charIndex < characterStrings.length; charIndex++) {
+            if (characterStrings[charIndex] == 'ε') {
+                tempIndex = charIndex;
                 break;
             }
         }
         /* 说明在字符中无空转移了 */
-        if (tempIndex==-1){
-            return ;
+        if (tempIndex == -1) {
+            return;
         }
-        for (int index=0;index<stateList.size();index++){
-            HashSet<Integer> tempToStateSet=hashSets[index][tempIndex];
-            if (tempToStateSet==null){
-
-            }else {
-                if (tempToStateSet.isEmpty()){
-
-                }else {
-
+        int tempCount = 0;
+        while (tempCount < stateList.size()) {
+            tempCount = 0;
+            for (int index = 0; index < stateList.size(); index++) {
+                HashSet<Integer> tempToStateSet = hashSets[index][tempIndex];
+                if (tempToStateSet == null || tempToStateSet.isEmpty()) {
+                    tempCount++;
+                } else {
+                    List<Integer> remove = new ArrayList<>();
+                    for (int state : tempToStateSet) {
+                        if (hashSets[state][tempIndex] == null || hashSets[state][tempIndex].isEmpty()) {
+                            for (int k = 0; k < characterStrings.length; k++) {
+                                if (hashSets[index][k] == null) {
+                                    if (hashSets[state][k] != null) {
+                                        hashSets[index][k] = hashSets[state][k];
+                                    }
+                                } else {
+                                    if (hashSets[state][k] != null) {
+                                        hashSets[index][k].addAll(hashSets[state][k]);
+                                    }
+                                }
+                            }
+                            isFinishState[index] = isFinishState[index] || isFinishState[state];
+                            remove.add(state);
+                        }
+                    }
+                    for (int state : remove) {
+                        tempToStateSet.remove(state);
+                    }
                 }
             }
         }
+        /*打印转移矩阵*/
+        printMoveSet(characterSet, stateList, hashSets, isFinishState);
     }
 
     /**
      * 打印状态转移矩阵
-     * @param characterSet 字符集
-     * @param stateList 状态集
-     * @param hashSets 转移矩阵
+     *
+     * @param characterSet  字符集
+     * @param stateList     状态集
+     * @param hashSets      转移矩阵
      * @param isFinishState 是否为终态的标记数组
      */
-    static void printMoveSet(HashSet<Character> characterSet, List<Integer> stateList,HashSet<Integer>[][] hashSets,boolean[] isFinishState){
+    static void printMoveSet(HashSet<Character> characterSet, List<Integer> stateList, HashSet<Integer>[][] hashSets, boolean[] isFinishState) {
         System.out.println("状态转移矩阵：");
         System.out.print("\t");
         for (char ch : characterSet) {
@@ -141,10 +165,14 @@ public class NFAToDFA {
             System.out.print(stateList.get(++stateIndex) + "\t");
             for (HashSet<Integer> integers : hashSet) {
                 if (integers != null) {
-                    for (int states : integers) {
-                        System.out.print(states + " ");
+                    if (integers.isEmpty()) {
+                        System.out.print("null\t");
+                    } else {
+                        for (int states : integers) {
+                            System.out.print(states + " ");
+                        }
+                        System.out.print("  \t");
                     }
-                    System.out.print("  \t");
                 } else {
                     System.out.print("null\t");
                 }

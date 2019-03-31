@@ -14,9 +14,9 @@ import java.util.*;
  * @author wdl
  */
 public class SuffixToNFA {
-    /*
     public static void main(String[] args) {
         String string = "(((a b|b )*(ab|c.d))*)*";
+
         StringBuilder result = new StringBuilder();
         System.out.println("正规式为：" + string);
 
@@ -41,7 +41,7 @@ public class SuffixToNFA {
         } else {
             System.out.println("输入有误");
         }
-    }*/
+    }
 
     /**
      * 记录边的三元组
@@ -229,7 +229,7 @@ public class SuffixToNFA {
             Side side1 = new Side(newStartState, firstStateList.get(firstNfa.getStartIndex()), 'ε');
             Side side2 = new Side(firstStateList.get(firstNfa.getFinishIndex()), newFinishState, 'ε');
 
-            Side side3 = new Side(newStartState, nextStateList.get(nextNfa.getFinishIndex()), 'ε');
+            Side side3 = new Side(newStartState, nextStateList.get(nextNfa.getStartIndex()), 'ε');
             Side side4 = new Side(nextStateList.get(nextNfa.getFinishIndex()), newFinishState, 'ε');
 
             firstStateList.addAll(nextStateList);
