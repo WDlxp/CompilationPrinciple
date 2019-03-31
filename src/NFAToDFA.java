@@ -41,7 +41,7 @@ public class NFAToDFA {
     private static void changeNFAToDFA(SuffixToNFA.NFA nfa) {
         List<Integer> stateList = nfa.getStateList();
         HashSet<Character> characterSet = nfa.getCharacterSet();
-        char[] characterStrings = new char[characterSet.size()];
+        char[] characters = new char[characterSet.size()];
         /* 用于记录是否为终态 */
         boolean[] isFinishState = new boolean[stateList.size()];
         /* 终态初始化 */
@@ -49,21 +49,21 @@ public class NFAToDFA {
         /* 将set集合转化为String数组 */
         int i = -1;
         for (char ch : characterSet) {
-            characterStrings[++i] = ch;
+            characters[++i] = ch;
         }
         /*1.使用HashSet作为转移矩阵 */
         HashSet<Integer>[][] hashSets = new HashSet[stateList.size()][characterSet.size()];
-        stateTransitionMatrix(nfa, characterStrings, hashSets);
+        stateTransitionMatrix(nfa, characters, hashSets);
 
         /*打印转移矩阵*/
-        printMoveSet(characterSet, stateList, hashSets, isFinishState);
+        printMoveSet(characters, stateList, hashSets,stateList.size(),isFinishState);
 
         /*2.去除空转移*/
 
         /* 找出ε所在的列下标 */
         int tempIndex = -1;
-        for (int charIndex = 0; charIndex < characterStrings.length; charIndex++) {
-            if (characterStrings[charIndex] == 'ε') {
+        for (int charIndex = 0; charIndex < characters.length; charIndex++) {
+            if (characters[charIndex] == 'ε') {
                 tempIndex = charIndex;
                 break;
             }
@@ -103,7 +103,7 @@ public class NFAToDFA {
                     while (it.hasNext()) {
                         int state = it.next();
                         if (hashSets[state][tempIndex] == null || hashSets[state][tempIndex].isEmpty()) {
-                            mergeTwoRows(characterStrings, hashSets, isFinishState, index, state);
+                            mergeTwoRows(characters, hashSets, isFinishState, index, state);
                             it.remove();
                         }
                     }
@@ -111,7 +111,7 @@ public class NFAToDFA {
             }
         }
         /*打印转移矩阵*/
-        printMoveSet(characterSet, stateList, hashSets, isFinishState);
+        printMoveSet(characters, stateList, hashSets,stateList.size(), isFinishState);
 
         /*3.整理转移矩阵形成DFA*/
         HashSet<Integer>[][] hashSetsDFA = new HashSet[stateList.size() * 2][characterSet.size() + 1];
@@ -121,7 +121,7 @@ public class NFAToDFA {
         int startState = nfa.getStartIndex();
         hashSetsDFA[0][characterSet.size()] = new HashSet();
         hashSetsDFA[0][characterSet.size()].add(startState);
-        for (int k = 0; k < characterStrings.length; k++) {
+        for (int k = 0; k < characters.length; k++) {
             if (hashSets[startState][k] != null && !hashSets[startState][k].isEmpty()) {
                 hashSetsDFA[0][k] = new HashSet<>();
                 hashSetsDFA[0][k].addAll(hashSets[startState][k]);
@@ -129,12 +129,12 @@ public class NFAToDFA {
         }
         isFinishStateDFA[0] = isFinishState[startState];
         for (int i1 = 0; i1 <= newStateIndexCount; i1++) {
-            for (int j = 0; j < characterStrings.length; j++) {
+            for (int j = 0; j < characters.length; j++) {
                 if (hashSetsDFA[i1][j] != null && !hashSetsDFA[i1][j].isEmpty()) {
                     boolean isExits = false;
                     for (int l = 0; l <= newStateIndexCount; l++) {
                         //说明状态已经存在
-                        if (hashSetsDFA[l][characterStrings.length].equals(hashSetsDFA[i1][j])) {
+                        if (hashSetsDFA[l][characters.length].equals(hashSetsDFA[i1][j])) {
                             isExits = true;
                             break;
                         }
@@ -144,7 +144,7 @@ public class NFAToDFA {
                         hashSetsDFA[newStateIndexCount][characterSet.size()] = new HashSet<>();
                         hashSetsDFA[newStateIndexCount][characterSet.size()].addAll(hashSetsDFA[i1][j]);
                         for (int state : hashSetsDFA[i1][j]) {
-                            for (int k = 0; k < characterStrings.length; k++) {
+                            for (int k = 0; k < characters.length; k++) {
                                 if (hashSets[state][k] != null && !hashSets[state][k].isEmpty()) {
                                     if (hashSetsDFA[newStateIndexCount][k] == null) {
                                         hashSetsDFA[newStateIndexCount][k] = new HashSet<>();
@@ -158,27 +158,13 @@ public class NFAToDFA {
                 }
             }
         }
-
-
-        System.out.println("整理后的转移矩阵");
-        for (int k = 0; k <= newStateIndexCount; k++) {
-            HashSet<Integer>[] hashSet = hashSetsDFA[k];
-            for (HashSet<Integer> integers : hashSet) {
-                if (integers != null) {
-                    if (integers.isEmpty()) {
-                        System.out.print("null\t");
-                    } else {
-                        for (int states : integers) {
-                            System.out.print(states + " ");
-                        }
-                        System.out.print("  \t");
-                    }
-                } else {
-                    System.out.print("null\t");
-                }
-            }
-            System.out.println(isFinishStateDFA[k]);
+        char[] chars=new char[characterSet.size()+1];
+        for (int k=0;k<characterSet.size();k++){
+            chars[k]=characters[k];
         }
+        //代表状态
+        chars[characterSet.size()]=' ';
+        printMoveSet(chars,stateList,hashSetsDFA,newStateIndexCount+1,isFinishStateDFA);
         /*4.DFA最小化*/
     }
 
@@ -216,21 +202,21 @@ public class NFAToDFA {
     /**
      * 打印状态转移矩阵
      *
-     * @param characterSet  字符集
+     * @param characters  字符集
      * @param stateList     状态集
      * @param hashSets      转移矩阵
      * @param isFinishState 是否为终态的标记数组
      */
-    private static void printMoveSet(HashSet<Character> characterSet, List<Integer> stateList, HashSet<Integer>[][] hashSets, boolean[] isFinishState) {
+    private static void printMoveSet(char[] characters, List<Integer> stateList, HashSet<Integer>[][] hashSets,int hashSetRowNumber, boolean[] isFinishState) {
         System.out.println("状态转移矩阵：");
         System.out.print("\t");
-        for (char ch : characterSet) {
+        for (char ch : characters) {
             System.out.print(" " + ch + "  \t");
         }
         System.out.println("终态");
-        int stateIndex = -1;
-        for (HashSet<Integer>[] hashSet : hashSets) {
-            System.out.print(stateList.get(++stateIndex) + "\t");
+        for (int stateIndex=0;stateIndex<hashSetRowNumber;stateIndex++) {
+            HashSet[] hashSet=hashSets[stateIndex];
+            System.out.print(stateList.get(stateIndex) + "\t");
             for (HashSet<Integer> integers : hashSet) {
                 if (integers != null) {
                     if (integers.isEmpty()) {
