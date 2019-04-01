@@ -56,7 +56,7 @@ public class NFAToDFA {
         stateTransitionMatrix(nfa, characters, hashSets);
 
         /*打印转移矩阵*/
-        printMoveSet(characters, stateList, hashSets, stateList.size(), characterSet.size(),isFinishState);
+        printMoveSet(characters, stateList, hashSets, stateList.size(), characterSet.size(), isFinishState);
 
         /*2.去除空转移*/
 
@@ -111,17 +111,20 @@ public class NFAToDFA {
             }
         }
         /*打印转移矩阵*/
-        printMoveSet(characters, stateList, hashSets, stateList.size(),characterSet.size(), isFinishState);
+        printMoveSet(characters, stateList, hashSets, stateList.size(), characterSet.size(), isFinishState);
 
         /*3.整理转移矩阵形成DFA*/
         HashSet<Integer>[][] hashSetsDFA = new HashSet[stateList.size() * 2][characterSet.size() + 1];
+        /* 用于记录新的转移矩阵的状态是否为终态 */
         boolean[] isFinishStateDFA = new boolean[stateList.size() * 2];
         int newStateIndexCount = 0;
-        /* 初始化第一行 */
+        /* 获取开始状态 */
         int startState = nfa.getStartIndex();
-        int stateIndex = characterSet.size();
-        hashSetsDFA[0][stateIndex] = new HashSet();
-        hashSetsDFA[0][stateIndex].add(startState);
+        /* 用来状态放置的列下标 */
+        int stateColumnIndex = characterSet.size();
+        /* 初始化第一行 */
+        hashSetsDFA[0][stateColumnIndex] = new HashSet();
+        hashSetsDFA[0][stateColumnIndex].add(startState);
         for (int k = 0; k < characters.length; k++) {
             if (hashSets[startState][k] != null && !hashSets[startState][k].isEmpty()) {
                 hashSetsDFA[0][k] = new HashSet<>();
@@ -129,21 +132,26 @@ public class NFAToDFA {
             }
         }
         isFinishStateDFA[0] = isFinishState[startState];
+        /* 在新的转移矩阵中整理DFA */
         for (int i1 = 0; i1 <= newStateIndexCount; i1++) {
             for (int j = 0; j < characters.length; j++) {
                 if (hashSetsDFA[i1][j] != null && !hashSetsDFA[i1][j].isEmpty()) {
+                    /* 判断状态是否已经存在 */
                     boolean isExits = false;
                     for (int l = 0; l <= newStateIndexCount; l++) {
-                        //说明状态已经存在
+                        /* 说明状态已经存在 */
                         if (hashSetsDFA[l][characters.length].equals(hashSetsDFA[i1][j])) {
                             isExits = true;
                             break;
                         }
                     }
+                    /*状态不存在时创建新的状态，增加新的状态数newStateIndexCount++*/
                     if (!isExits) {
+                        /* 新增一个状态 */
                         newStateIndexCount++;
-                        hashSetsDFA[newStateIndexCount][characterSet.size()] = new HashSet<>();
-                        hashSetsDFA[newStateIndexCount][characterSet.size()].addAll(hashSetsDFA[i1][j]);
+                        hashSetsDFA[newStateIndexCount][stateColumnIndex] = new HashSet<>();
+                        hashSetsDFA[newStateIndexCount][stateColumnIndex].addAll(hashSetsDFA[i1][j]);
+                        /* 将状态从原来的矩阵中复制过来 */
                         for (int state : hashSetsDFA[i1][j]) {
                             for (int k = 0; k < characters.length; k++) {
                                 if (hashSets[state][k] != null && !hashSets[state][k].isEmpty()) {
@@ -163,9 +171,9 @@ public class NFAToDFA {
         for (int j = 0; j <= newStateIndexCount; j++) {
             for (int col = 0; col <= newStateIndexCount; col++) {
                 HashSet[] hashSets1 = hashSetsDFA[col];
-                for (int row=0;row<=stateIndex-2;row++){
-                    if (hashSets1[row] != null && hashSets1[row].size() == hashSetsDFA[j][stateIndex].size() && hashSets1[row].equals(hashSetsDFA[j][stateIndex])) {
-                        hashSets1[row] .clear();
+                for (int row = 0; row <= stateColumnIndex - 2; row++) {
+                    if (hashSets1[row] != null && hashSets1[row].size() == hashSetsDFA[j][stateColumnIndex].size() && hashSets1[row].equals(hashSetsDFA[j][stateColumnIndex])) {
+                        hashSets1[row].clear();
                         hashSets1[row].add(j);
                     }
                 }
@@ -173,7 +181,7 @@ public class NFAToDFA {
         }
 
         /* 打印DFA */
-        printMoveSet(characters, stateList, hashSetsDFA, newStateIndexCount + 1,characterSet.size(), isFinishStateDFA);
+        printMoveSet(characters, stateList, hashSetsDFA, newStateIndexCount + 1, characterSet.size(), isFinishStateDFA);
 
         /*4.DFA最小化*/
 
@@ -213,24 +221,24 @@ public class NFAToDFA {
     /**
      * 打印状态转移矩阵
      *
-     * @param characters    字符集
-     * @param stateList     状态集
-     * @param hashSets      转移矩阵
-     * @param hashSetRowNumber hashSet需要打印的行数目
+     * @param characters          字符集
+     * @param stateList           状态集
+     * @param hashSets            转移矩阵
+     * @param hashSetRowNumber    hashSet需要打印的行数目
      * @param hashSetColumnNumber hashSet需要打印的列数目
-     * @param isFinishState 是否为终态的标记数组
+     * @param isFinishState       是否为终态的标记数组
      */
-    private static void printMoveSet(char[] characters, List<Integer> stateList, HashSet<Integer>[][] hashSets, int hashSetRowNumber, int hashSetColumnNumber,boolean[] isFinishState) {
+    private static void printMoveSet(char[] characters, List<Integer> stateList, HashSet<Integer>[][] hashSets, int hashSetRowNumber, int hashSetColumnNumber, boolean[] isFinishState) {
         System.out.println("状态转移矩阵：");
         System.out.print("\t");
-        for (int i=0;i<hashSetColumnNumber;i++) {
+        for (int i = 0; i < hashSetColumnNumber; i++) {
             System.out.print(" " + characters[i] + "  \t");
         }
         System.out.println("终态");
         for (int row = 0; row < hashSetRowNumber; row++) {
             HashSet<Integer>[] hashSet = hashSets[row];
             System.out.print(stateList.get(row) + "\t");
-            for (int col=0;col<hashSetColumnNumber;col++) {
+            for (int col = 0; col < hashSetColumnNumber; col++) {
                 if (hashSet[col] != null) {
                     if (hashSet[col].isEmpty()) {
                         System.out.print("null\t");
