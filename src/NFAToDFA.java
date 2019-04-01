@@ -184,11 +184,13 @@ public class NFAToDFA {
         printMoveSet(characters, stateList, hashSetsDFA, newStateIndexCount + 1, characterSet.size(), isFinishStateDFA);
 
         /*4.DFA最小化*/
-        HashSet<Integer>[] hashSetsMinDFA = new HashSet[newStateIndexCount];
+        HashSet<Integer>[] hashSetsMinDFA = new HashSet[newStateIndexCount+1];
         /* 初始化将原有状态集分为终态与非终态两个集合 */
         hashSetsMinDFA[0] = new HashSet<Integer>();
         hashSetsMinDFA[1] = new HashSet<Integer>();
         int setCount = 2;
+        /* 用来记录对应状态转移的字符串 */
+        String[] stateMoveStrings = new String[newStateIndexCount + 1];
         for (int row = 0; row <= newStateIndexCount; row++) {
             if (isFinishStateDFA[row]) {
                 hashSetsMinDFA[0].add(row);
@@ -196,15 +198,57 @@ public class NFAToDFA {
                 hashSetsMinDFA[1].add(row);
             }
         }
-        for (int setIndex = 0; setIndex < setCount; setIndex++) {
-            int count=hashSetsMinDFA[setIndex].size();
-            if (count > 1) {
-                for (int state:hashSetsMinDFA[setIndex]) {
-
+        int oldSetCount =0;
+        /* 当不再有新的集合出现时停止 */
+        while (setCount > oldSetCount) {
+            /* 将当前集合个数赋值给oldSetCount */
+            oldSetCount=setCount;
+            /* 遍历当前集合需找是否需要分裂 */
+            for (int setIndex = 0; setIndex < setCount; setIndex++) {
+                int count = hashSetsMinDFA[setIndex].size();
+                /* 当前集合的长度>1才需要进行判断是否分裂 */
+                if (count > 1) {
+                    /* 记录第一个状态和获取每个状态的转移字符串 */
+                    int firstState = -1;
+                    for (int state : hashSetsMinDFA[setIndex]) {
+                        if (firstState == -1) {
+                            firstState = state;
+                        }
+                        StringBuilder moveString = new StringBuilder();
+                        for (int k = 0; k < characters.length; k++) {
+                            moveString.append(whichSetIndex(hashSetsMinDFA, setCount, hashSetsDFA[state][k]));
+                        }
+                        stateMoveStrings[state] = moveString.toString();
+                    }
+                    /* 遍历以第一个状态为该集合的标准将与第一个状态转移不符的重新建立一个集合 */
+                    HashSet newSet = new HashSet();
+                    Iterator<Integer> it = hashSetsMinDFA[setIndex].iterator();
+                    while (it.hasNext()) {
+                        int state = it.next();
+                        if (!stateMoveStrings[state].equals(stateMoveStrings[firstState])) {
+                            newSet.add(state);
+                            it.remove();
+                        }
+                    }
+                    /* 如果不空代表有新分裂的集合，将新分裂的集合加入集合数组中 */
+                    if (!newSet.isEmpty()) {
+                        hashSetsMinDFA[setCount]=new HashSet<>();
+                        hashSetsMinDFA[setCount].addAll(newSet);
+                        setCount++;
+                    }
                 }
             }
         }
-
+        //打印看看过程
+        for (String s : stateMoveStrings) {
+            System.out.println(s);
+        }
+        for (int k = 0; k < setCount; k++) {
+            for (int state : hashSetsMinDFA[k]) {
+                System.out.print(state + " ");
+            }
+            System.out.println(" ");
+        }
     }
 
     /**
@@ -219,9 +263,9 @@ public class NFAToDFA {
         if (state == null) {
             return -1;
         }
-        int currentState=-1;
-        for ( int s:state){
-            currentState=s;
+        int currentState = -1;
+        for (int s : state) {
+            currentState = s;
         }
         for (int col = 0; col < setCount; col++) {
             if (hashSetsMinDFA[col].contains(currentState)) {
@@ -275,12 +319,12 @@ public class NFAToDFA {
     private static void printMoveSet(char[] characters, List<Integer> stateList, HashSet<Integer>[][] hashSets, int hashSetRowNumber, int hashSetColumnNumber, boolean[] isFinishState) {
         System.out.println("状态转移矩阵：");
         System.out.print("\t");
-        if (hashSetColumnNumber<=characters.length){
+        if (hashSetColumnNumber <= characters.length) {
             for (int i = 0; i < hashSetColumnNumber; i++) {
                 System.out.print(" " + characters[i] + "  \t");
             }
-        }else {
-            for (char ch:characters) {
+        } else {
+            for (char ch : characters) {
                 System.out.print(" " + ch + "  \t");
             }
         }
