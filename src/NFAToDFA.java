@@ -23,7 +23,7 @@ public class NFAToDFA {
     /**
      * NFA转DFA
      *
-     * @param nfa 传入NFA
+     * @param nfa   传入NFA
      * @param print 是否打印过程
      * @return 返回一个最小DFA的二维矩阵，横坐标对应字符集的顺序，最后列代表是否为终态1代表是0代表不是，同时第一行即状态0代表入口
      */
@@ -272,23 +272,33 @@ public class NFAToDFA {
             }
         }
         if (isPrint) {
-            /* 显示整理好后重命名的DFA */
-            System.out.println("DFA最小化");
-            System.out.print("\t");
-            for (char ch : characters) {
-                System.out.print(ch + "\t");
-            }
-            System.out.println("终态");
-            int state = 0;
-            for (int[] ints : minDFA) {
-                System.out.print(state++ + "\t");
-                for (int i1 : ints) {
-                    System.out.print(i1 + "\t");
-                }
-                System.out.println(" ");
-            }
+            printMinDFA(characters, minDFA);
         }
         return minDFA;
+    }
+
+    /**
+     * 打印最小化DFA
+     *
+     * @param characters 字符集
+     * @param minDFA     最小化DFA数组
+     */
+     static void printMinDFA(char[] characters, int[][] minDFA) {
+        /* 显示整理好后重命名的DFA */
+        System.out.println("DFA最小化");
+        System.out.print("\t");
+        for (char ch : characters) {
+            System.out.print(ch + "\t");
+        }
+        System.out.println("终态");
+        int state = 0;
+        for (int[] ints : minDFA) {
+            System.out.print(state++ + "\t");
+            for (int i1 : ints) {
+                System.out.print(i1 + "\t");
+            }
+            System.out.println(" ");
+        }
     }
 
     /**
