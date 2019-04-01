@@ -16,31 +16,21 @@ public class NFAToDFA {
      *
      * @param args
      */
+
     public static void main(String[] args) {
-        String string = "(((a b|b )*(ab|c.d))*)*";
-        string = "ab";
-        StringBuilder result = new StringBuilder();
-        System.out.println("正规式为：" + string);
-
-        SuffixToNFA.NFA nfa = null;
-
-        if (InfixToSuffix.change(string, result) == 0) {
-            System.out.println("后缀表达式：" + result.toString());
-            nfa = SuffixToNFA.changeSuffixToNfa(result.toString());
-            SuffixToNFA.printNFA(nfa);
-        } else {
-            System.out.println("输入有误");
-        }
-        NFAToDFA.changeNFAToDFA(nfa);
     }
 
     /**
      * NFA转DFA
      *
      * @param nfa 传入NFA
+     * @param print 是否打印过程
      * @return 返回一个最小DFA的二维矩阵，横坐标对应字符集的顺序，最后列代表是否为终态1代表是0代表不是，同时第一行即状态0代表入口
      */
-    private static int[][] changeNFAToDFA(SuffixToNFA.NFA nfa) {
+    static int[][] changeNFAToDFA(SuffixToNFA.NFA nfa, boolean print) {
+        //是否打印过程
+        boolean isPrint = print;
+
         List<Integer> stateList = nfa.getStateList();
         HashSet<Character> characterSet = nfa.getCharacterSet();
 
@@ -64,9 +54,10 @@ public class NFAToDFA {
         HashSet<Integer>[][] hashSets = new HashSet[stateList.size()][characterSet.size()];
         stateTransitionMatrix(nfa, characters, hashSets);
 
-        /*打印转移矩阵*/
-        printMoveSet(characters, stateList, hashSets, stateList.size(), characterSet.size(), isFinishState);
-
+        if (isPrint) {
+            /*打印转移矩阵*/
+            printMoveSet(characters, stateList, hashSets, stateList.size(), characterSet.size(), isFinishState);
+        }
         /*2.去除空转移*/
 
         /* 找出ε所在的列下标 */
@@ -119,9 +110,11 @@ public class NFAToDFA {
                 }
             }
         }
-        /*打印转移矩阵*/
-        printMoveSet(characters, stateList, hashSets, stateList.size(), characterSet.size(), isFinishState);
-
+        if (isPrint) {
+            /*打印转移矩阵去除控转移*/
+            System.out.println("去除空转移");
+            printMoveSet(characters, stateList, hashSets, stateList.size(), characterSet.size(), isFinishState);
+        }
         /*3.整理转移矩阵形成DFA*/
         HashSet<Integer>[][] hashSetsDFA = new HashSet[stateList.size() * 2][characterSet.size() + 1];
         /* 用于记录新的转移矩阵的状态是否为终态 */
@@ -189,10 +182,11 @@ public class NFAToDFA {
             }
         }
 
-        /* 打印DFA */
-        System.out.println("去除空转移后的DFA");
-        printMoveSet(characters, stateList, hashSetsDFA, newStateIndexCount + 1, characterSet.size(), isFinishStateDFA);
-
+        if (isPrint) {
+            /* 打印DFA */
+            System.out.println("整理重命名");
+            printMoveSet(characters, stateList, hashSetsDFA, newStateIndexCount + 1, characterSet.size(), isFinishStateDFA);
+        }
         /*4.DFA最小化*/
 
         /*
@@ -259,9 +253,12 @@ public class NFAToDFA {
                 }
             }
         }
-        /* 打印DFA */
-        System.out.println("整理后的DFA最小化");
-        printMoveSet(characters, stateList, hashSetsDFA, newStateIndexCount + 1, characterSet.size(), isFinishStateDFA);
+
+        if (isPrint) {
+            /* 打印DFA */
+            System.out.println("整理后的DFA最小化");
+            printMoveSet(characters, stateList, hashSetsDFA, newStateIndexCount + 1, characterSet.size(), isFinishStateDFA);
+        }
 
         /* 最小DFA重命名(使用二维数组来装最后的DFA并返回，最后增加一列用来表示是否终态) */
         int[][] minDFA = new int[setCount][characters.length + 1];
@@ -274,20 +271,22 @@ public class NFAToDFA {
                 minDFA[j][characters.length] = 1;
             }
         }
-        /* 显示整理好后重命名的DFA */
-        System.out.println("最小DFA");
-        System.out.print("\t");
-        for (char ch : characters) {
-            System.out.print(ch + "\t");
-        }
-        System.out.println("终态");
-        int state = 0;
-        for (int[] ints : minDFA) {
-            System.out.print(state++ + "\t");
-            for (int i1 : ints) {
-                System.out.print(i1 + "\t");
+        if (isPrint) {
+            /* 显示整理好后重命名的DFA */
+            System.out.println("DFA最小化");
+            System.out.print("\t");
+            for (char ch : characters) {
+                System.out.print(ch + "\t");
             }
-            System.out.println(" ");
+            System.out.println("终态");
+            int state = 0;
+            for (int[] ints : minDFA) {
+                System.out.print(state++ + "\t");
+                for (int i1 : ints) {
+                    System.out.print(i1 + "\t");
+                }
+                System.out.println(" ");
+            }
         }
         return minDFA;
     }
