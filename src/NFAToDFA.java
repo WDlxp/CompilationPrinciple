@@ -171,15 +171,12 @@ public class NFAToDFA {
                 }
             }
         }
-        char[] chars = new char[characterSet.size() + 1];
-        for (int k = 0; k < characterSet.size(); k++) {
-            chars[k] = characters[k];
-        }
-        //代表状态
-        chars[characterSet.size()] = ' ';
 
-        printMoveSet(chars, stateList, hashSetsDFA, newStateIndexCount + 1,characterSet.size()-1, isFinishStateDFA);
+        /* 打印DFA */
+        printMoveSet(characters, stateList, hashSetsDFA, newStateIndexCount + 1,characterSet.size(), isFinishStateDFA);
+
         /*4.DFA最小化*/
+
     }
 
     /**
