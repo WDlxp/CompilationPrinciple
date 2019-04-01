@@ -15,7 +15,7 @@ public class Main {
             nfa = SuffixToNFA.changeSuffixToNfa(result.toString());
             SuffixToNFA.printNFA(nfa);
             /* 返回一个最小DFA的二维矩阵，横坐标对应字符集的顺序，最后列代表是否为终态1代表是0代表不是，同时第一行即状态0代表入口 */
-            int[][] minDFA=NFAToDFA.changeNFAToDFA(nfa,true);
+            int[][] minDFA = NFAToDFA.changeNFAToDFA(nfa, true);
         } else {
             System.out.println("输入有误");
         }

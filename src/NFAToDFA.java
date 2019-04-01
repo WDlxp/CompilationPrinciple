@@ -40,12 +40,13 @@ public class NFAToDFA {
             minDFA[0][1] = 1;
             return minDFA;
         }
+
         char[] characters = new char[characterSet.size()];
         /* 用于记录是否为终态 */
         boolean[] isFinishState = new boolean[stateList.size()];
         /* 终态初始化 */
         isFinishState[nfa.getFinishIndex()] = true;
-        /* 将set集合转化为String数组 */
+        /* 将set集合转化为char数组 */
         int i = -1;
         for (char ch : characterSet) {
             characters[++i] = ch;
@@ -283,7 +284,7 @@ public class NFAToDFA {
      * @param characters 字符集
      * @param minDFA     最小化DFA数组
      */
-     static void printMinDFA(char[] characters, int[][] minDFA) {
+     private static void printMinDFA(char[] characters, int[][] minDFA) {
         /* 显示整理好后重命名的DFA */
         System.out.println("DFA最小化");
         System.out.print("\t");
