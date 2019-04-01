@@ -184,7 +184,47 @@ public class NFAToDFA {
         printMoveSet(characters, stateList, hashSetsDFA, newStateIndexCount + 1, characterSet.size(), isFinishStateDFA);
 
         /*4.DFA最小化*/
+        HashSet<Integer>[] hashSetsMinDFA = new HashSet[newStateIndexCount];
+        /* 初始化将原有状态集分为终态与非终态两个集合 */
+        hashSetsMinDFA[0] = new HashSet<Integer>();
+        hashSetsMinDFA[1] = new HashSet<Integer>();
+        int setCount = 2;
+        for (int row = 0; row <= newStateIndexCount; row++) {
+            if (isFinishStateDFA[row]) {
+                hashSetsMinDFA[0].add(row);
+            } else {
+                hashSetsMinDFA[1].add(row);
+            }
+        }
+        for (int setIndex = 0; setIndex < setCount; setIndex++) {
+            int count=hashSetsMinDFA[setIndex].size();
+            if (count > 1) {
+                for (int state:hashSetsMinDFA[setIndex]) {
 
+                }
+            }
+        }
+
+    }
+
+    /**
+     * 返回状态所在集合
+     *
+     * @param hashSetsMinDFA 状态集
+     * @param setCount       状态集有效个数
+     * @param state          查找的状态
+     * @return 返回状态在状态集的下标-1则代表是空
+     */
+    private static int whichSetIndex(HashSet[] hashSetsMinDFA, int setCount, HashSet state) {
+        if (state == null) {
+            return -1;
+        }
+        for (int col = 0; col < setCount; col++) {
+            if (hashSetsMinDFA[col].contains(state)) {
+                return col;
+            }
+        }
+        return -1;
     }
 
     /**
@@ -231,9 +271,16 @@ public class NFAToDFA {
     private static void printMoveSet(char[] characters, List<Integer> stateList, HashSet<Integer>[][] hashSets, int hashSetRowNumber, int hashSetColumnNumber, boolean[] isFinishState) {
         System.out.println("状态转移矩阵：");
         System.out.print("\t");
-        for (int i = 0; i < hashSetColumnNumber; i++) {
-            System.out.print(" " + characters[i] + "  \t");
+        if (hashSetColumnNumber<=characters.length){
+            for (int i = 0; i < hashSetColumnNumber; i++) {
+                System.out.print(" " + characters[i] + "  \t");
+            }
+        }else {
+            for (char ch:characters) {
+                System.out.print(" " + ch + "  \t");
+            }
         }
+
         System.out.println("终态");
         for (int row = 0; row < hashSetRowNumber; row++) {
             HashSet<Integer>[] hashSet = hashSets[row];
