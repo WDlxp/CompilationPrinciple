@@ -33,14 +33,6 @@ public class NFAToDFA {
 
         List<Integer> stateList = nfa.getStateList();
         HashSet<Character> characterSet = nfa.getCharacterSet();
-
-        if (characterSet.size() == 1) {
-            int[][] minDFA = new int[1][2];
-            minDFA[0][0] = -1;
-            minDFA[0][1] = 1;
-            return minDFA;
-        }
-
         char[] characters = new char[characterSet.size()];
         /* 用于记录是否为终态 */
         boolean[] isFinishState = new boolean[stateList.size()];
@@ -51,6 +43,17 @@ public class NFAToDFA {
         for (char ch : characterSet) {
             characters[++i] = ch;
         }
+        if (characterSet.size() == 1) {
+            int[][] minDFA = new int[1][2];
+            minDFA[0][0] = -1;
+            minDFA[0][1] = 1;
+            if (isPrint){
+                printMinDFA(characters,minDFA);
+            }
+            return minDFA;
+        }
+
+
         /*1.使用HashSet作为转移矩阵 */
         HashSet<Integer>[][] hashSets = new HashSet[stateList.size()][characterSet.size()];
         stateTransitionMatrix(nfa, characters, hashSets);

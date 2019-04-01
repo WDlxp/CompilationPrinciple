@@ -1,10 +1,8 @@
-import java.util.ArrayList;
-import java.util.HashSet;
-
 public class Main {
 
     public static void main(String[] args) {
         String string = "(((a b|b )*(ab|c.d))*)*";
+        string="a";
         StringBuilder result = new StringBuilder();
         System.out.println("正规式为：" + string);
 
