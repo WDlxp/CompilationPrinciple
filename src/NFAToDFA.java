@@ -215,12 +215,16 @@ public class NFAToDFA {
      * @param state          查找的状态
      * @return 返回状态在状态集的下标-1则代表是空
      */
-    private static int whichSetIndex(HashSet[] hashSetsMinDFA, int setCount, HashSet state) {
+    private static int whichSetIndex(HashSet[] hashSetsMinDFA, int setCount, HashSet<Integer> state) {
         if (state == null) {
             return -1;
         }
+        int currentState=-1;
+        for ( int s:state){
+            currentState=s;
+        }
         for (int col = 0; col < setCount; col++) {
-            if (hashSetsMinDFA[col].contains(state)) {
+            if (hashSetsMinDFA[col].contains(currentState)) {
                 return col;
             }
         }

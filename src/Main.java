@@ -16,11 +16,11 @@ public class Main {
         hashSet.add(3);
 
         HashSet<Integer> hashSet1=new HashSet();
-        hashSet1.add(3);
-        hashSet1.add(2);
+
         hashSet1.add(1);
 
         System.out.println(hashSet.equals(hashSet1));
         System.out.println(hashSet.size()==hashSet1.size());
+        System.out.println(hashSet.contains(1));
     }
 }
