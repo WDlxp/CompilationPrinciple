@@ -184,67 +184,68 @@ public class NFAToDFA {
         printMoveSet(characters, stateList, hashSetsDFA, newStateIndexCount + 1, characterSet.size(), isFinishStateDFA);
 
         /*4.DFA最小化*/
-        HashSet<Integer>[] hashSetsMinDFA = new HashSet[newStateIndexCount+1];
-        /* 初始化将原有状态集分为终态与非终态两个集合 */
-        hashSetsMinDFA[0] = new HashSet<Integer>();
-        hashSetsMinDFA[1] = new HashSet<Integer>();
+
+        /*
+        未使用HashSet<Integer>[] hashSetsMinDFA = new HashSet[newStateIndexCount+1]因为无序
+        使用ArrayList可以保证入口状态在第一个List中的第一位，也就可以在下面的最小化时保证入口状态在下标为0（即第一个）集合
+        */
+        ArrayList<Integer>[] arrayListMinDFA = new ArrayList[newStateIndexCount + 1];
+        /* 初始化将原有状态集分为终态与非终态两个集合(同时将起始状态所在集合作为第一个集合) */
+        arrayListMinDFA[0] = new ArrayList<>();
+        arrayListMinDFA[1] = new ArrayList<>();
         int setCount = 2;
         /* 用来记录对应状态转移的字符串 */
         String[] stateMoveStrings = new String[newStateIndexCount + 1];
         for (int row = 0; row <= newStateIndexCount; row++) {
-            if (isFinishStateDFA[row]) {
-                hashSetsMinDFA[0].add(row);
+            if (isFinishStateDFA[row] == isFinishStateDFA[0]) {
+                arrayListMinDFA[0].add(row);
             } else {
-                hashSetsMinDFA[1].add(row);
+                arrayListMinDFA[1].add(row);
             }
         }
-        int oldSetCount =0;
+        int oldSetCount = 0;
         /* 当不再有新的集合出现时停止 */
         while (setCount > oldSetCount) {
             /* 将当前集合个数赋值给oldSetCount */
-            oldSetCount=setCount;
+            oldSetCount = setCount;
             /* 遍历当前集合需找是否需要分裂 */
             for (int setIndex = 0; setIndex < setCount; setIndex++) {
-                int count = hashSetsMinDFA[setIndex].size();
+                int count = arrayListMinDFA[setIndex].size();
                 /* 当前集合的长度>1才需要进行判断是否分裂 */
                 if (count > 1) {
                     /* 记录第一个状态和获取每个状态的转移字符串 */
-                    int firstState = -1;
-                    for (int state : hashSetsMinDFA[setIndex]) {
-                        if (firstState == -1) {
-                            firstState = state;
-                        }
+                    for (int state : arrayListMinDFA[setIndex]) {
                         StringBuilder moveString = new StringBuilder();
                         for (int k = 0; k < characters.length; k++) {
-                            moveString.append(whichSetIndex(hashSetsMinDFA, setCount, hashSetsDFA[state][k]));
+                            moveString.append(whichSetIndex(arrayListMinDFA, setCount, hashSetsDFA[state][k]));
                         }
                         stateMoveStrings[state] = moveString.toString();
                     }
-                    /* 遍历以第一个状态为该集合的标准将与第一个状态转移不符的重新建立一个集合 */
-                    HashSet newSet = new HashSet();
-                    Iterator<Integer> it = hashSetsMinDFA[setIndex].iterator();
+                    /* 遍历以第一个状态(arrayListMinDFA[setIndex].get(0))为该集合的标准将与第一个状态转移不符的重新建立一个集合 */
+                    ArrayList newSet = new ArrayList();
+                    Iterator<Integer> it = arrayListMinDFA[setIndex].iterator();
                     while (it.hasNext()) {
                         int state = it.next();
-                        if (!stateMoveStrings[state].equals(stateMoveStrings[firstState])) {
+                        if (!stateMoveStrings[state].equals(stateMoveStrings[arrayListMinDFA[setIndex].get(0)])) {
                             newSet.add(state);
                             it.remove();
                         }
                     }
                     /* 如果不空代表有新分裂的集合，将新分裂的集合加入集合数组中 */
                     if (!newSet.isEmpty()) {
-                        hashSetsMinDFA[setCount]=new HashSet<>();
-                        hashSetsMinDFA[setCount].addAll(newSet);
+                        arrayListMinDFA[setCount] = new ArrayList<>();
+                        arrayListMinDFA[setCount].addAll(newSet);
                         setCount++;
                     }
                 }
             }
         }
-        //打印看看过程
-        for (String s : stateMoveStrings) {
-            System.out.println(s);
-        }
+        //记录最小DFA的终态情况
+        boolean[] isFinishStateMinDFA = new boolean[setCount];
+
+        //打印查看情况
         for (int k = 0; k < setCount; k++) {
-            for (int state : hashSetsMinDFA[k]) {
+            for (int state : arrayListMinDFA[k]) {
                 System.out.print(state + " ");
             }
             System.out.println(" ");
@@ -259,16 +260,12 @@ public class NFAToDFA {
      * @param state          查找的状态
      * @return 返回状态在状态集的下标-1则代表是空
      */
-    private static int whichSetIndex(HashSet[] hashSetsMinDFA, int setCount, HashSet<Integer> state) {
+    private static int whichSetIndex(ArrayList[] hashSetsMinDFA, int setCount, HashSet<Integer> state) {
         if (state == null) {
             return -1;
         }
-        int currentState = -1;
-        for (int s : state) {
-            currentState = s;
-        }
         for (int col = 0; col < setCount; col++) {
-            if (hashSetsMinDFA[col].contains(currentState)) {
+            if (hashSetsMinDFA[col].containsAll(state)) {
                 return col;
             }
         }
@@ -354,14 +351,14 @@ public class NFAToDFA {
     /**
      * 将第二行合并到第一行
      *
-     * @param characterStrings 字符集
-     * @param hashSets         转移矩阵
-     * @param isFinishState    是否终态标志
-     * @param firstState       第一个状态
-     * @param secondState      第二个状态
+     * @param characters    字符集
+     * @param hashSets      转移矩阵
+     * @param isFinishState 是否终态标志
+     * @param firstState    第一个状态
+     * @param secondState   第二个状态
      */
-    private static void mergeTwoRows(char[] characterStrings, HashSet<Integer>[][] hashSets, boolean[] isFinishState, int firstState, int secondState) {
-        for (int k = 0; k < characterStrings.length; k++) {
+    private static void mergeTwoRows(char[] characters, HashSet<Integer>[][] hashSets, boolean[] isFinishState, int firstState, int secondState) {
+        for (int k = 0; k < characters.length; k++) {
             if (hashSets[secondState][k] != null && !hashSets[secondState][k].isEmpty()) {
                 if (hashSets[firstState][k] == null) {
                     hashSets[firstState][k] = new HashSet<>();

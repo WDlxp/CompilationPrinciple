@@ -20,6 +20,6 @@ public class Main {
 
         System.out.println(hashSet.equals(hashSet1));
         System.out.println(hashSet.size()==hashSet1.size());
-        System.out.println(hashSet.contains(1));
+        System.out.println(hashSet.containsAll(hashSet1));
     }
 }
