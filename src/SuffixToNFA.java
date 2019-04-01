@@ -214,6 +214,7 @@ public class SuffixToNFA {
 
                 Side side = new Side(firstStateList.get(firstNfa.getFinishIndex()), nextStateList.get(nextNfa.getStartIndex()), 'ε');
 
+                firstCharSet.add('ε');
                 firstStateList.addAll(nextStateList);
 
                 firstCharSet.addAll(nextNfa.getCharacterSet());
@@ -234,6 +235,8 @@ public class SuffixToNFA {
 
             Side side3 = new Side(newStartState, nextStateList.get(nextNfa.getStartIndex()), 'ε');
             Side side4 = new Side(nextStateList.get(nextNfa.getFinishIndex()), newFinishState, 'ε');
+
+            firstCharSet.add('ε');
 
             firstStateList.addAll(nextStateList);
             firstStateList.add(newStartState);

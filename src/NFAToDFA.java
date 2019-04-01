@@ -18,6 +18,7 @@ public class NFAToDFA {
      */
     public static void main(String[] args) {
         String string = "(((a b|b )*(ab|c.d))*)*";
+        string="ab";
         StringBuilder result = new StringBuilder();
         System.out.println("正规式为：" + string);
 
@@ -38,9 +39,16 @@ public class NFAToDFA {
      *
      * @param nfa 传入NFA
      */
-    private static void changeNFAToDFA(SuffixToNFA.NFA nfa) {
+    private static int[][] changeNFAToDFA(SuffixToNFA.NFA nfa) {
         List<Integer> stateList = nfa.getStateList();
         HashSet<Character> characterSet = nfa.getCharacterSet();
+
+        if (characterSet.size()==1){
+            int[][] minDFA=new int[1][2];
+            minDFA[0][0]=-1;
+            minDFA[0][1]=1;
+            return minDFA;
+        }
         char[] characters = new char[characterSet.size()];
         /* 用于记录是否为终态 */
         boolean[] isFinishState = new boolean[stateList.size()];
@@ -69,10 +77,9 @@ public class NFAToDFA {
             }
         }
         /* 说明在字符中无空转移了 */
-        if (tempIndex == -1) {
-            return;
-        }
-        int tempCount = 0;
+        if (tempIndex != -1) {
+
+            int tempCount = 0;
            /*
         第一种思路每次找到空转移为空的状态，遍历查找含该状态空转移的状态的消除
         while (tempCount < stateList.size()) {
@@ -91,20 +98,21 @@ public class NFAToDFA {
             }
         }*/
 
-        /* 第二种思路，每次找空转移非空的状态，根据空转移下的状态查找对应状态是否可合并过来*/
-        while (tempCount < stateList.size()) {
-            tempCount = 0;
-            for (int index = 0; index < stateList.size(); index++) {
-                HashSet<Integer> tempToStateSet = hashSets[index][tempIndex];
-                if (tempToStateSet == null || tempToStateSet.isEmpty()) {
-                    tempCount++;
-                } else {
-                    Iterator<Integer> it = tempToStateSet.iterator();
-                    while (it.hasNext()) {
-                        int state = it.next();
-                        if (hashSets[state][tempIndex] == null || hashSets[state][tempIndex].isEmpty()) {
-                            mergeTwoRows(characters, hashSets, isFinishState, index, state);
-                            it.remove();
+            /* 第二种思路，每次找空转移非空的状态，根据空转移下的状态查找对应状态是否可合并过来*/
+            while (tempCount < stateList.size()) {
+                tempCount = 0;
+                for (int index = 0; index < stateList.size(); index++) {
+                    HashSet<Integer> tempToStateSet = hashSets[index][tempIndex];
+                    if (tempToStateSet == null || tempToStateSet.isEmpty()) {
+                        tempCount++;
+                    } else {
+                        Iterator<Integer> it = tempToStateSet.iterator();
+                        while (it.hasNext()) {
+                            int state = it.next();
+                            if (hashSets[state][tempIndex] == null || hashSets[state][tempIndex].isEmpty()) {
+                                mergeTwoRows(characters, hashSets, isFinishState, index, state);
+                                it.remove();
+                            }
                         }
                     }
                 }
@@ -181,6 +189,7 @@ public class NFAToDFA {
         }
 
         /* 打印DFA */
+        System.out.println("去除空转移后的DFA");
         printMoveSet(characters, stateList, hashSetsDFA, newStateIndexCount + 1, characterSet.size(), isFinishStateDFA);
 
         /*4.DFA最小化*/
@@ -189,7 +198,7 @@ public class NFAToDFA {
         未使用HashSet<Integer>[] hashSetsMinDFA = new HashSet[newStateIndexCount+1]因为无序
         使用ArrayList可以保证入口状态在第一个List中的第一位，也就可以在下面的最小化时保证入口状态在下标为0（即第一个）集合
         */
-        ArrayList<Integer>[] arrayListMinDFA = new ArrayList[newStateIndexCount + 1];
+        ArrayList<Integer>[] arrayListMinDFA = new ArrayList[newStateIndexCount+1];
         /* 初始化将原有状态集分为终态与非终态两个集合(同时将起始状态所在集合作为第一个集合) */
         arrayListMinDFA[0] = new ArrayList<>();
         arrayListMinDFA[1] = new ArrayList<>();
@@ -240,16 +249,46 @@ public class NFAToDFA {
                 }
             }
         }
-        //记录最小DFA的终态情况
-        boolean[] isFinishStateMinDFA = new boolean[setCount];
 
-        //打印查看情况
+        /* 最小DFA的整理 */
         for (int k = 0; k < setCount; k++) {
-            for (int state : arrayListMinDFA[k]) {
-                System.out.print(state + " ");
+            if (arrayListMinDFA[k] != null) {
+                for (int state = 1; state < arrayListMinDFA[k].size(); state++) {
+                    mergeTwoRows(characters, hashSetsDFA, isFinishStateDFA, arrayListMinDFA[k].get(0), arrayListMinDFA[k].get(state));
+                }
+            }
+        }
+        /* 打印DFA */
+        System.out.println("整理后的DFA最小化");
+        printMoveSet(characters, stateList, hashSetsDFA, newStateIndexCount + 1, characterSet.size(), isFinishStateDFA);
+
+        /* 最小DFA重命名(使用二维数组来装最后的DFA并返回，最后增加一列用来表示是否终态) */
+        int[][] minDFA = new int[setCount][characters.length + 1];
+        for (int j = 0; j < setCount; j++) {
+            int firstState = arrayListMinDFA[j].get(0);
+            for (int col = 0; col < characters.length; col++) {
+                minDFA[j][col] = whichSetIndex(arrayListMinDFA, setCount, hashSetsDFA[firstState][col]);
+            }
+            if (isFinishStateDFA[firstState]) {
+                minDFA[j][characters.length] = 1;
+            }
+        }
+        /* 显示整理好后重命名的DFA */
+        System.out.println("最小DFA");
+        System.out.print("\t");
+        for (char ch :characters){
+            System.out.print(ch+"\t");
+        }
+        System.out.println("终态");
+        int state=0;
+        for (int[] ints : minDFA) {
+            System.out.print(state+++"\t");
+            for (int i1 : ints) {
+                System.out.print(i1 + "\t");
             }
             System.out.println(" ");
         }
+        return minDFA;
     }
 
     /**
@@ -276,17 +315,17 @@ public class NFAToDFA {
      * 边装换为状态转移矩阵
      *
      * @param nfa              对应的NFA
-     * @param characterStrings 字符集
+     * @param characters 字符集
      * @param hashSets         状态转移矩阵
      */
-    private static void stateTransitionMatrix(SuffixToNFA.NFA nfa, char[] characterStrings, HashSet[][] hashSets) {
+    private static void stateTransitionMatrix(SuffixToNFA.NFA nfa, char[] characters, HashSet[][] hashSets) {
         for (SuffixToNFA.Side side : nfa.getMoveList()) {
             /*获取当前需要添加的位置下标*/
             int state = side.getPreState();
             char ch = side.getTransferCondition();
             int characterIndex = -1;
             while (true) {
-                if (characterStrings[++characterIndex] == ch) {
+                if (characters[++characterIndex] == ch) {
                     break;
                 }
             }

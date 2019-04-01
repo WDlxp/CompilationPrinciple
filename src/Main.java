@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.HashSet;
 
 public class Main {
@@ -13,6 +14,9 @@ public class Main {
         hashSet.add(1);
         hashSet.add(2);
         hashSet.add(3);
+        ArrayList<Integer> arrayList=new ArrayList<>();
+        arrayList.add(1);
+        arrayList.add(2);
 
         HashSet<Integer> hashSet1=new HashSet();
 
@@ -21,5 +25,6 @@ public class Main {
         System.out.println(hashSet.equals(hashSet1));
         System.out.println(hashSet.size()==hashSet1.size());
         System.out.println(hashSet.containsAll(hashSet1));
+        System.out.println(arrayList.containsAll(hashSet1));
     }
 }
