@@ -145,9 +145,6 @@ public class LexicalAnalysis {
                 if (characters[index] == op) {
                     isHave = true;
                     if (miniDFA[current][index] == -1) {
-                        if (j == input.length() - 1) {
-                            return miniDFA[current][characters.length] == 1;
-                        }
                         return false;
                     } else {
                         current = miniDFA[current][index];
