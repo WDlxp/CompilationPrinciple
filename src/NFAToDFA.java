@@ -108,6 +108,7 @@ public class NFAToDFA {
 
             /* 第二种思路，每次找空转移非空的状态，根据空转移下的状态查找对应状态是否可合并过来*/
             while (tempCount < stateList.size()) {
+                int oldTempCount = tempCount;
                 tempCount = 0;
                 for (int index = 0; index < stateList.size(); index++) {
                     HashSet<Integer> tempToStateSet = hashSets[index][tempIndex];
@@ -123,6 +124,10 @@ public class NFAToDFA {
                             }
                         }
                     }
+                }
+                if (tempCount == oldTempCount) {
+                    System.out.println("输入正规式成环目前未能解决");
+                    return null;
                 }
             }
         }
@@ -280,13 +285,15 @@ public class NFAToDFA {
         /* 最小DFA重命名(使用二维数组来装最后的DFA并返回，最后增加一列用来表示是否终态) */
         int[][] minDFA = new int[setCount][characters.length + 1];
         for (int j = 0; j < setCount; j++) {
-            int firstState = arrayListMinDFA[j].get(0);
-            for (int col = 0; col < characters.length; col++) {
-                int sateIndex = whichSetIndex(arrayListMinDFA, setCount, hashSetsDFA[firstState][col]);
-                minDFA[j][col] = sateIndex;
-            }
-            if (isFinishStateDFA[firstState]) {
-                minDFA[j][characters.length] = 1;
+            if (arrayListMinDFA[j].size() != 0) {
+                int firstState = arrayListMinDFA[j].get(0);
+                for (int col = 0; col < characters.length; col++) {
+                    int sateIndex = whichSetIndex(arrayListMinDFA, setCount, hashSetsDFA[firstState][col]);
+                    minDFA[j][col] = sateIndex;
+                }
+                if (isFinishStateDFA[firstState]) {
+                    minDFA[j][characters.length] = 1;
+                }
             }
         }
         if (isPrint) {
