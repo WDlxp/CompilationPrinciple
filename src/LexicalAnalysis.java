@@ -12,7 +12,7 @@ public class LexicalAnalysis {
      * @param resultFilePsth      结果输出文件路径
      * @param isPrint             是否打印过程
      */
-    static void lexicalAnalysis(String filePath, String regularFormFilePath, String resultFilePsth,boolean isPrint) throws IOException {
+    static void lexicalAnalysis(String filePath, String regularFormFilePath, String resultFilePsth, boolean isPrint) throws IOException {
         String readWordsFileString = null;
         String readRegularFormString = null;
         try {
@@ -34,15 +34,18 @@ public class LexicalAnalysis {
             char[] characters = result.getCharacters();
             assert readWordsFileString != null;
             if (!readWordsFileString.isEmpty()) {
-                System.out.println("文件内容为:" + readWordsFileString);
+//                System.out.println("文件内容为:" + readWordsFileString);
                 String[] division = readWordsFileString.split(" ");
                 for (String cell : division) {
+                    if (!cell.equals("")){
+                        System.out.println(cell);
                     boolean isRight = legitimacy(miniDFA, cell, characters);
                     System.out.println("合法性判断结果：" + isRight);
                     // 写入到缓冲区
-                    writer.append(cell+":"+isRight);
+                    writer.append(cell + ":" + isRight);
                     // 换行
                     writer.append("\r\n");
+                    }
                 }
             } else {
                 System.out.println("文件内容为空！");
@@ -52,6 +55,7 @@ public class LexicalAnalysis {
         } else {
             System.out.println("输入有误");
         }
+
     }
 
     /**
@@ -73,8 +77,7 @@ public class LexicalAnalysis {
         //逐行读取文件内容，不读取换行符和末尾的空格
         while ((s = bReader.readLine()) != null) {
             //将读取的字符串添加换行符后累加存放在缓存中
-//            sb.append(s).append("\n");
-            sb.append(s);
+            sb.append(s).append(" ");
         }
         bReader.close();
         return sb.toString();
@@ -148,7 +151,6 @@ public class LexicalAnalysis {
      * @param characters 字符集
      * @return 返回是否合法
      */
-
     private static boolean legitimacy(int[][] miniDFA, String input, char[] characters) {
         int current = 0;
         for (int j = 0; j < input.length(); j++) {
