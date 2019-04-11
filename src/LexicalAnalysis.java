@@ -148,7 +148,7 @@ public class LexicalAnalysis {
                             return miniDFA[current][characters.length] == 1;
                         }
                         return false;
-                    }else {
+                    } else {
                         current = miniDFA[current][index];
                         break;
                     }
