@@ -1,7 +1,4 @@
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 
 /**
  * @author wdl
@@ -10,21 +7,28 @@ public class LexicalAnalysis {
     /**
      * 词法分析
      *
-     * @param filePath          单词文件路径
+     * @param filePath            单词文件路径
      * @param regularFormFilePath 正规式文件路径
-     * @param isPrint           是否打印过程
+     * @param isPrint             是否打印过程
      */
-    static void lexicalAnalysis(String filePath, String regularFormFilePath, boolean isPrint) {
+    static void lexicalAnalysis(String filePath, String regularFormFilePath, String resultFilePsth,boolean isPrint) throws IOException {
         String readWordsFileString = null;
-        String readRegularFormString=null;
+        String readRegularFormString = null;
         try {
             readWordsFileString = readFile(filePath);
-            readRegularFormString=readFile(regularFormFilePath);
+            readRegularFormString = readFile(regularFormFilePath);
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         Result result = returnMiniDFA(readRegularFormString, isPrint);
         if (result.isTrue()) {
+            // 构建FileOutputStream对象,文件不存在会自动新建
+            FileOutputStream fop = new FileOutputStream(resultFilePsth);
+            // 构建OutputStreamWriter对象,参数可以指定编码,默认为操作系统默认编码,windows上是gbk
+            OutputStreamWriter writer = new OutputStreamWriter(fop, "UTF-8");
+
+            // 构建FileOutputStream对象,文件不存在会自动新建
             int[][] miniDFA = result.getMiniDFA();
             char[] characters = result.getCharacters();
             assert readWordsFileString != null;
@@ -32,11 +36,18 @@ public class LexicalAnalysis {
                 System.out.println("文件内容为:" + readWordsFileString);
                 String[] division = readWordsFileString.split(" ");
                 for (String cell : division) {
-                    System.out.println("合法性判断结果：" + legitimacy(miniDFA, cell, characters));
+                    boolean isRight = legitimacy(miniDFA, cell, characters);
+                    System.out.println("合法性判断结果：" + isRight);
+                    // 写入到缓冲区
+                    writer.append(cell+":"+isRight);
+                    // 换行
+                    writer.append("\r\n");
                 }
             } else {
                 System.out.println("文件内容为空！");
             }
+            // 刷新缓存冲,写入到文件,如果下面已经没有写入的内容了,直接close也会写入
+            writer.close();
         } else {
             System.out.println("输入有误");
         }
