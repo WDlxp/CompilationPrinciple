@@ -278,12 +278,6 @@ public class NFAToDFA {
         }
 
         /* 最小DFA重命名(使用二维数组来装最后的DFA并返回，最后增加一列用来表示是否终态) */
-
-        for (ArrayList arrayList:arrayListMinDFA){
-            for (Object item:arrayList){
-                System.out.println(item);
-            }
-        }
         int[][] minDFA = new int[setCount][characters.length + 1];
         for (int j = 0; j < setCount; j++) {
             int firstState = arrayListMinDFA[j].get(0);

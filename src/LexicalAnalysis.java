@@ -152,6 +152,6 @@ public class LexicalAnalysis {
                 }
             }
         }
-        return miniDFA[current][characters.length] == 1;
+        return false;
     }
 }
