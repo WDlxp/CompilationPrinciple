@@ -6,7 +6,7 @@ import java.io.IOException;
 public class Main {
     public static void main(String[] args) throws IOException {
         //(((i n|t )*(ab|c.d))*)*
-        String regularFormString = "int*";
+        String regularFormString = "(i|n)nt*a*";
 
         String filePath = "src/test.txt";
 

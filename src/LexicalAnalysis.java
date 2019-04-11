@@ -59,7 +59,8 @@ public class LexicalAnalysis {
         //逐行读取文件内容，不读取换行符和末尾的空格
         while ((s = bReader.readLine()) != null) {
             //将读取的字符串添加换行符后累加存放在缓存中
-            sb.append(s).append("\n");
+//            sb.append(s).append("\n");
+            sb.append(s);
         }
         bReader.close();
         return sb.toString();
