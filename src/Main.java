@@ -1,4 +1,3 @@
-import java.io.File;
 import java.io.IOException;
 
 /**
@@ -7,7 +6,7 @@ import java.io.IOException;
 public class Main {
     public static void main(String[] args) throws IOException {
         //(((i n|t )*(ab|c.d))*)*
-        String regularFormString = "int*";
+        String regularFormString = "int*a*";
 
         String filePath = "src/test.txt";
 

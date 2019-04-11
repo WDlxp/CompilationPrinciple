@@ -10,9 +10,9 @@ public class LexicalAnalysis {
     /**
      * 词法分析
      *
-     * @param filePath 文件路径
-     * @param regularFormString   正规式
-     * @param isPrint  是否打印过程
+     * @param filePath          文件路径
+     * @param regularFormString 正规式
+     * @param isPrint           是否打印过程
      */
     static void lexicalAnalysis(String filePath, String regularFormString, boolean isPrint) {
         String readFileString = null;
@@ -137,21 +137,28 @@ public class LexicalAnalysis {
     private static boolean legitimacy(int[][] miniDFA, String input, char[] characters) {
         int current = 0;
         for (int j = 0; j < input.length(); j++) {
+            //字符是否存在的标志
+            boolean isHave = false;
             char op = input.charAt(j);
             for (int index = 0; index < characters.length; index++) {
                 if (characters[index] == op) {
+                    isHave = true;
                     if (miniDFA[current][index] == -1) {
                         if (j == input.length() - 1) {
                             return miniDFA[current][characters.length] == 1;
                         }
                         return false;
-                    } else {
+                    }else {
                         current = miniDFA[current][index];
                         break;
                     }
                 }
             }
+            //如果符号不存在直接返回false
+            if (!isHave) {
+                return false;
+            }
         }
-        return false;
+        return miniDFA[current][characters.length] == 1;
     }
 }
