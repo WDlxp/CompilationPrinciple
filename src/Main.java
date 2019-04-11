@@ -9,9 +9,7 @@ public class Main {
         //(((i n|t )*(ab|c.d))*)*
         String regularFormString = "int*";
 
-        File testFile = new File("src/test.txt");
-        //
-        String filePath = testFile.getPath();
+        String filePath = "src/test.txt";
 
         boolean isPrint = true;
         LexicalAnalysis.lexicalAnalysis(filePath, regularFormString, isPrint);
