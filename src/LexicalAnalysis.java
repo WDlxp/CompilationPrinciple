@@ -9,6 +9,7 @@ public class LexicalAnalysis {
      *
      * @param filePath            单词文件路径
      * @param regularFormFilePath 正规式文件路径
+     * @param resultFilePsth      结果输出文件路径
      * @param isPrint             是否打印过程
      */
     static void lexicalAnalysis(String filePath, String regularFormFilePath, String resultFilePsth,boolean isPrint) throws IOException {
