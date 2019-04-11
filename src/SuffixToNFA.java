@@ -15,12 +15,12 @@ import java.util.*;
  */
 public class SuffixToNFA {
     public static void main(String[] args) {
-        String string = "(((a b|b )*(ab|c.d))*)*";
-
+        String regularFormString = "(((a b|b )*(ab|c.d))*)*";
+        regularFormString="int ab";
         StringBuilder result = new StringBuilder();
-        System.out.println("正规式为：" + string);
+        System.out.println("正规式为：" + regularFormString);
 
-        if (InfixToSuffix.change(string, result) == 0) {
+        if (InfixToSuffix.change(regularFormString, result) == 0) {
             System.out.println("后缀表达式：" + result.toString());
             NFA nfa = changeSuffixToNfa(result.toString());
            printNFA(nfa);

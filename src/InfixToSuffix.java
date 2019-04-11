@@ -22,10 +22,12 @@ import java.util.Stack;
 public class InfixToSuffix {
     /**
      * 代码测试使用
+     *
      * @param args
      */
     public static void main(String[] args) {
         String string = "(a b|e.d)|abcd*";
+        string = "int  ab";
         StringBuilder result = new StringBuilder();
         if (change(string, result) == 0) {
             System.out.println(result);
@@ -128,6 +130,9 @@ public class InfixToSuffix {
          */
         while (stack.peek() != '#') {
             suffixStr.append(stack.pop());
+        }
+        if (suffixStr.length() == 0) {
+            return -1;
         }
         return 0;
     }

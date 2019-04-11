@@ -18,6 +18,19 @@ public class NFAToDFA {
      */
 
     public static void main(String[] args) {
+        String regularFormString = "(((a b|b )*(ab|c.d))*)*";
+        regularFormString = "int ab";
+        StringBuilder result = new StringBuilder();
+        System.out.println("正规式为：" + regularFormString);
+
+        if (InfixToSuffix.change(regularFormString, result) == 0) {
+            System.out.println("后缀表达式：" + result.toString());
+            SuffixToNFA.NFA nfa = SuffixToNFA.changeSuffixToNfa(result.toString());
+            SuffixToNFA.printNFA(nfa);
+            changeNFAToDFA(nfa, true);
+        } else {
+            System.out.println("输入有误");
+        }
     }
 
     /**
@@ -47,12 +60,11 @@ public class NFAToDFA {
             int[][] minDFA = new int[1][2];
             minDFA[0][0] = -1;
             minDFA[0][1] = 1;
-            if (isPrint){
-                printMinDFA(characters,minDFA);
+            if (isPrint) {
+                printMinDFA(characters, minDFA);
             }
             return minDFA;
         }
-
 
         /*1.使用HashSet作为转移矩阵 */
         HashSet<Integer>[][] hashSets = new HashSet[stateList.size()][characterSet.size()];
@@ -177,7 +189,7 @@ public class NFAToDFA {
         for (int j = 0; j <= newStateIndexCount; j++) {
             for (int col = 0; col <= newStateIndexCount; col++) {
                 HashSet[] hashSets1 = hashSetsDFA[col];
-                for (int row = 0; row <= stateColumnIndex - 2; row++) {
+                for (int row = 0; row <= stateColumnIndex - 1; row++) {
                     if (hashSets1[row] != null && hashSets1[row].size() == hashSetsDFA[j][stateColumnIndex].size() && hashSets1[row].equals(hashSetsDFA[j][stateColumnIndex])) {
                         hashSets1[row].clear();
                         hashSets1[row].add(j);
@@ -201,6 +213,7 @@ public class NFAToDFA {
         /* 初始化将原有状态集分为终态与非终态两个集合(同时将起始状态所在集合作为第一个集合) */
         arrayListMinDFA[0] = new ArrayList<>();
         arrayListMinDFA[1] = new ArrayList<>();
+
         int setCount = 2;
         /* 用来记录对应状态转移的字符串 */
         String[] stateMoveStrings = new String[newStateIndexCount + 1];
@@ -265,11 +278,18 @@ public class NFAToDFA {
         }
 
         /* 最小DFA重命名(使用二维数组来装最后的DFA并返回，最后增加一列用来表示是否终态) */
+
+        for (ArrayList arrayList:arrayListMinDFA){
+            for (Object item:arrayList){
+                System.out.println(item);
+            }
+        }
         int[][] minDFA = new int[setCount][characters.length + 1];
         for (int j = 0; j < setCount; j++) {
             int firstState = arrayListMinDFA[j].get(0);
             for (int col = 0; col < characters.length; col++) {
-                minDFA[j][col] = whichSetIndex(arrayListMinDFA, setCount, hashSetsDFA[firstState][col]);
+                int sateIndex = whichSetIndex(arrayListMinDFA, setCount, hashSetsDFA[firstState][col]);
+                minDFA[j][col] = sateIndex;
             }
             if (isFinishStateDFA[firstState]) {
                 minDFA[j][characters.length] = 1;
@@ -287,7 +307,7 @@ public class NFAToDFA {
      * @param characters 字符集
      * @param minDFA     最小化DFA数组
      */
-     private static void printMinDFA(char[] characters, int[][] minDFA) {
+    private static void printMinDFA(char[] characters, int[][] minDFA) {
         /* 显示整理好后重命名的DFA */
         System.out.println("DFA最小化");
         System.out.print("\t");
