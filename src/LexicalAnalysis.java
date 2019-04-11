@@ -10,25 +10,27 @@ public class LexicalAnalysis {
     /**
      * 词法分析
      *
-     * @param filePath          文件路径
-     * @param regularFormString 正规式
+     * @param filePath          单词文件路径
+     * @param regularFormFilePath 正规式文件路径
      * @param isPrint           是否打印过程
      */
-    static void lexicalAnalysis(String filePath, String regularFormString, boolean isPrint) {
-        String readFileString = null;
+    static void lexicalAnalysis(String filePath, String regularFormFilePath, boolean isPrint) {
+        String readWordsFileString = null;
+        String readRegularFormString=null;
         try {
-            readFileString = readFile(filePath);
+            readWordsFileString = readFile(filePath);
+            readRegularFormString=readFile(regularFormFilePath);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Result result = returnMiniDFA(regularFormString, isPrint);
+        Result result = returnMiniDFA(readRegularFormString, isPrint);
         if (result.isTrue()) {
             int[][] miniDFA = result.getMiniDFA();
             char[] characters = result.getCharacters();
-            assert readFileString != null;
-            if (!readFileString.isEmpty()) {
-                System.out.println("文件内容为:" + readFileString);
-                String[] division = readFileString.split(" ");
+            assert readWordsFileString != null;
+            if (!readWordsFileString.isEmpty()) {
+                System.out.println("文件内容为:" + readWordsFileString);
+                String[] division = readWordsFileString.split(" ");
                 for (String cell : division) {
                     System.out.println("合法性判断结果：" + legitimacy(miniDFA, cell, characters));
                 }
