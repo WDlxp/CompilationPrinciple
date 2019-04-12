@@ -1,3 +1,5 @@
+package lexicalAnalysis;
+
 import java.util.*;
 
 /**

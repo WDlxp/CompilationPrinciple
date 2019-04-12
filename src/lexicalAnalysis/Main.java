@@ -1,3 +1,5 @@
+package lexicalAnalysis;
+
 import java.io.IOException;
 
 /**
@@ -5,10 +7,9 @@ import java.io.IOException;
  */
 public class Main {
     public static void main(String[] args) {
-
-        String regularFormFilePath = "src/regularForm.txt";
-        String wordsFilePath = "src/test.txt";
-        String resultFilePath = "src/result.txt";
+        String regularFormFilePath = "src/lexicalAnalysis/regularForm.txt";
+        String wordsFilePath = "src/lexicalAnalysis/test.txt";
+        String resultFilePath = "src/lexicalAnalysis/result.txt";
 
         boolean isPrint = false;
 
