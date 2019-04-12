@@ -10,10 +10,10 @@ class LexicalAnalysis {
      *
      * @param filePath            单词文件路径
      * @param regularFormFilePath 正规式文件路径
-     * @param resultFilePsth      结果输出文件路径
+     * @param resultFilePath      结果输出文件路径
      * @param isPrint             是否打印过程
      */
-    static void lexicalAnalysis(String filePath, String regularFormFilePath, String resultFilePsth, boolean isPrint) throws IOException {
+    static void lexicalAnalysis(String filePath, String regularFormFilePath, String resultFilePath, boolean isPrint) throws IOException {
 
         //读取正规式文件和单词文件
         String readWordsFileString = readFile(filePath, " ");
@@ -23,8 +23,10 @@ class LexicalAnalysis {
         ArrayList<Result> miniDfaResultList = new ArrayList<>();
         //放置正规式集合
         ArrayList<String> regularFormList = new ArrayList<>();
+        //将读取出来的正规式按行划分
         String[] regularFormStrings = readRegularFormString.split("\n");
         for (String regularFormString : regularFormStrings) {
+            //划分出的取出的非空格才是需要处理的正规式
             if (!regularFormString.equals("")) {
                 regularFormList.add(regularFormString);
                 Result result = returnMiniDFA(regularFormString, isPrint);
@@ -34,10 +36,11 @@ class LexicalAnalysis {
                 }
             }
         }
+        //获取miniDFA的结果集合长度
         int len = miniDfaResultList.size();
         if (len != 0) {
             // 构建FileOutputStream对象,文件不存在会自动新建
-            FileOutputStream fop = new FileOutputStream(resultFilePsth);
+            FileOutputStream fop = new FileOutputStream(resultFilePath);
             // 构建OutputStreamWriter对象,参数可以指定编码,默认为操作系统默认编码,windows上是gbk
             OutputStreamWriter writer = new OutputStreamWriter(fop, "UTF-8");
 
