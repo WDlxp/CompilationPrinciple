@@ -26,7 +26,6 @@ class LexicalAnalysis {
         String[] regularFormStrings = readRegularFormString.split("\n");
         for (String regularFormString : regularFormStrings) {
             if (!regularFormString.equals("")) {
-//                System.out.println(regularFormString);
                 regularFormList.add(regularFormString);
                 Result result = returnMiniDFA(regularFormString, isPrint);
                 miniDfaResultList.add(result);
