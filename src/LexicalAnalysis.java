@@ -15,7 +15,6 @@ class LexicalAnalysis {
      */
     static void lexicalAnalysis(String filePath, String regularFormFilePath, String resultFilePsth, boolean isPrint) throws IOException {
 
-
         //读取正规式文件和单词文件
         String readWordsFileString = readFile(filePath, " ");
         String readRegularFormString = readFile(regularFormFilePath, "\n");
@@ -26,7 +25,11 @@ class LexicalAnalysis {
         for (String regularFormString : regularFormStrings) {
             if (!regularFormString.equals("")) {
 //                System.out.println(regularFormString);
-                miniDfaResultList.add(returnMiniDFA(regularFormString, isPrint));
+                Result result=returnMiniDFA(regularFormString, isPrint);
+                miniDfaResultList.add(result);
+                if (!result.isTrue()){
+                    System.out.println("正规式"+regularFormString+"输入有误");
+                }
             }
         }
 
@@ -79,6 +82,7 @@ class LexicalAnalysis {
      * 读取文件内容
      *
      * @param filePath 文件路径
+     * @param spit     划分行的字符
      * @return 文件内容
      */
     private static String readFile(String filePath, String spit) throws IOException {
