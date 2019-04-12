@@ -10,7 +10,7 @@ public class Main {
         String wordsFilePath = "src/test.txt";
         String resultFilePath = "src/result.txt";
 
-        boolean isPrint = true;
+        boolean isPrint = false;
 
         try {
             LexicalAnalysis.lexicalAnalysis(wordsFilePath, regularFormFilePath, resultFilePath, isPrint);

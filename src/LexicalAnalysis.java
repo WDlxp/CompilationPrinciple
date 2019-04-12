@@ -1,9 +1,10 @@
 import java.io.*;
+import java.util.ArrayList;
 
 /**
  * @author wdl
  */
-public class LexicalAnalysis {
+class LexicalAnalysis {
     /**
      * 词法分析
      *
@@ -13,49 +14,65 @@ public class LexicalAnalysis {
      * @param isPrint             是否打印过程
      */
     static void lexicalAnalysis(String filePath, String regularFormFilePath, String resultFilePsth, boolean isPrint) throws IOException {
-        String readWordsFileString = null;
-        String readRegularFormString = null;
-        try {
-            readWordsFileString = readFile(filePath);
-            readRegularFormString = readFile(regularFormFilePath);
-        } catch (IOException e) {
-            e.printStackTrace();
+
+
+        //读取正规式文件和单词文件
+        String readWordsFileString = readFile(filePath, " ");
+        String readRegularFormString = readFile(regularFormFilePath, "\n");
+
+        //放置正规式返回的miniDFA的集合
+        ArrayList<Result> miniDfaResultList = new ArrayList<>();
+        String[] regularFormStrings = readRegularFormString.split("\n");
+        for (String regularFormString : regularFormStrings) {
+            if (!regularFormString.equals("")) {
+//                System.out.println(regularFormString);
+                miniDfaResultList.add(returnMiniDFA(regularFormString, isPrint));
+            }
         }
 
-        Result result = returnMiniDFA(readRegularFormString, isPrint);
-        if (result.isTrue()) {
-            // 构建FileOutputStream对象,文件不存在会自动新建
-            FileOutputStream fop = new FileOutputStream(resultFilePsth);
-            // 构建OutputStreamWriter对象,参数可以指定编码,默认为操作系统默认编码,windows上是gbk
-            OutputStreamWriter writer = new OutputStreamWriter(fop, "UTF-8");
+        // 构建FileOutputStream对象,文件不存在会自动新建
+        FileOutputStream fop = new FileOutputStream(resultFilePsth);
+        // 构建OutputStreamWriter对象,参数可以指定编码,默认为操作系统默认编码,windows上是gbk
+        OutputStreamWriter writer = new OutputStreamWriter(fop, "UTF-8");
 
-            // 构建FileOutputStream对象,文件不存在会自动新建
-            int[][] miniDFA = result.getMiniDFA();
-            char[] characters = result.getCharacters();
-            assert readWordsFileString != null;
-            if (!readWordsFileString.isEmpty()) {
-//                System.out.println("文件内容为:" + readWordsFileString);
-                String[] division = readWordsFileString.split(" ");
-                for (String cell : division) {
-                    if (!cell.equals("")){
-                        System.out.println(cell);
-                    boolean isRight = legitimacy(miniDFA, cell, characters);
+        // 构建FileOutputStream对象,文件不存在会自动新建
+        int[][] miniDFA = null;
+        char[] characters = null;
+
+        if (!readWordsFileString.isEmpty()) {
+            String[] division = readWordsFileString.split(" ");
+            for (String cell : division) {
+                if (!cell.equals("")) {
+                    boolean isRight = false;
+                    System.out.println(cell);
+                    int i = 0;
+                    for (; i < miniDfaResultList.size(); i++) {
+                        Result result = miniDfaResultList.get(i);
+                        if (result.isTrue()) {
+                            miniDFA = result.getMiniDFA();
+                            characters = result.getCharacters();
+                            isRight = legitimacy(miniDFA, cell, characters);
+                        }
+                        if (isRight) {
+                            break;
+                        }
+                    }
                     System.out.println("合法性判断结果：" + isRight);
-                    // 写入到缓冲区
-                    writer.append(cell + ":" + isRight);
+                    if (isRight) {
+                        // 写入到缓冲区
+                        writer.append(cell + ":" + isRight + "符合第" + (i + 1) + "个正规式");
+                    } else {
+                        writer.append(cell + ":" + isRight);
+                    }
                     // 换行
                     writer.append("\r\n");
-                    }
                 }
-            } else {
-                System.out.println("文件内容为空！");
             }
-            // 刷新缓存冲,写入到文件,如果下面已经没有写入的内容了,直接close也会写入
-            writer.close();
         } else {
-            System.out.println("输入有误");
+            System.out.println("文件内容为空！");
         }
-
+        // 刷新缓存冲,写入到文件,如果下面已经没有写入的内容了,直接close也会写入
+        writer.close();
     }
 
     /**
@@ -64,7 +81,7 @@ public class LexicalAnalysis {
      * @param filePath 文件路径
      * @return 文件内容
      */
-    private static String readFile(String filePath) throws IOException {
+    private static String readFile(String filePath, String spit) throws IOException {
         //定义一个file对象，用来初始化FileReader
         File file = new File(filePath);
         //定义一个fileReader对象，用来初始化BufferedReader
@@ -77,7 +94,7 @@ public class LexicalAnalysis {
         //逐行读取文件内容，不读取换行符和末尾的空格
         while ((s = bReader.readLine()) != null) {
             //将读取的字符串添加换行符后累加存放在缓存中
-            sb.append(s).append(" ");
+            sb.append(s).append(spit);
         }
         bReader.close();
         return sb.toString();
