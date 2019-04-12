@@ -21,61 +21,69 @@ class LexicalAnalysis {
 
         //放置正规式返回的miniDFA的集合
         ArrayList<Result> miniDfaResultList = new ArrayList<>();
+        //放置正规式集合
+        ArrayList<String> regularFormList = new ArrayList<>();
         String[] regularFormStrings = readRegularFormString.split("\n");
         for (String regularFormString : regularFormStrings) {
             if (!regularFormString.equals("")) {
 //                System.out.println(regularFormString);
-                Result result=returnMiniDFA(regularFormString, isPrint);
+                regularFormList.add(regularFormString);
+                Result result = returnMiniDFA(regularFormString, isPrint);
                 miniDfaResultList.add(result);
-                if (!result.isTrue()){
-                    System.out.println("正规式"+regularFormString+"输入有误");
+                if (!result.isTrue()) {
+                    System.out.println("正规式" + regularFormString + "输入有误");
                 }
             }
         }
+        int len = miniDfaResultList.size();
+        if (len != 0) {
+            // 构建FileOutputStream对象,文件不存在会自动新建
+            FileOutputStream fop = new FileOutputStream(resultFilePsth);
+            // 构建OutputStreamWriter对象,参数可以指定编码,默认为操作系统默认编码,windows上是gbk
+            OutputStreamWriter writer = new OutputStreamWriter(fop, "UTF-8");
 
-        // 构建FileOutputStream对象,文件不存在会自动新建
-        FileOutputStream fop = new FileOutputStream(resultFilePsth);
-        // 构建OutputStreamWriter对象,参数可以指定编码,默认为操作系统默认编码,windows上是gbk
-        OutputStreamWriter writer = new OutputStreamWriter(fop, "UTF-8");
+            // 构建FileOutputStream对象,文件不存在会自动新建
+            int[][] miniDFA = null;
+            char[] characters = null;
 
-        // 构建FileOutputStream对象,文件不存在会自动新建
-        int[][] miniDFA = null;
-        char[] characters = null;
-
-        if (!readWordsFileString.isEmpty()) {
-            String[] division = readWordsFileString.split(" ");
-            for (String cell : division) {
-                if (!cell.equals("")) {
-                    boolean isRight = false;
-                    System.out.println(cell);
-                    int i = 0;
-                    for (; i < miniDfaResultList.size(); i++) {
-                        Result result = miniDfaResultList.get(i);
-                        if (result.isTrue()) {
-                            miniDFA = result.getMiniDFA();
-                            characters = result.getCharacters();
-                            isRight = legitimacy(miniDFA, cell, characters);
+            if (!readWordsFileString.isEmpty()) {
+                String[] division = readWordsFileString.split(" ");
+                for (String cell : division) {
+                    if (!cell.equals("")) {
+                        boolean isRight = false;
+                        System.out.println(cell);
+                        int i = 0;
+                        for (; i < len; i++) {
+                            Result result = miniDfaResultList.get(i);
+                            if (result.isTrue()) {
+                                miniDFA = result.getMiniDFA();
+                                characters = result.getCharacters();
+                                isRight = legitimacy(miniDFA, cell, characters);
+                            }
+                            if (isRight) {
+                                break;
+                            }
                         }
                         if (isRight) {
-                            break;
+                            // 写入到缓冲区
+                            writer.append(cell + ": " + isRight + " 符合第" + (i + 1) + "个正规式: " + regularFormList.get(i));
+                            System.out.println("合法性判断结果： " + isRight + "  符合第" + (i + 1) + "个正规式: " + regularFormList.get(i));
+                        } else {
+                            writer.append(cell + ":" + isRight);
+                            System.out.println("合法性判断结果： " + isRight);
                         }
+                        // 换行
+                        writer.append("\r\n");
                     }
-                    System.out.println("合法性判断结果：" + isRight);
-                    if (isRight) {
-                        // 写入到缓冲区
-                        writer.append(cell + ":" + isRight + "符合第" + (i + 1) + "个正规式");
-                    } else {
-                        writer.append(cell + ":" + isRight);
-                    }
-                    // 换行
-                    writer.append("\r\n");
                 }
+            } else {
+                System.out.println("文件内容为空！");
             }
+            // 刷新缓存冲,写入到文件,如果下面已经没有写入的内容了,直接close也会写入
+            writer.close();
         } else {
-            System.out.println("文件内容为空！");
+            System.out.println("请在正规式文件中输入正规式以行划分");
         }
-        // 刷新缓存冲,写入到文件,如果下面已经没有写入的内容了,直接close也会写入
-        writer.close();
     }
 
     /**
