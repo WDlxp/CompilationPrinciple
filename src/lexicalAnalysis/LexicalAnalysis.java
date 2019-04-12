@@ -2,6 +2,7 @@ package lexicalAnalysis;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  * @author wdl
@@ -17,6 +18,60 @@ class LexicalAnalysis {
      */
     static void lexicalAnalysis(String filePath, String regularFormFilePath, String resultFilePath, boolean isPrint) throws IOException {
 
+        //关键字集合
+        HashSet keyWordSet = new HashSet() {{
+            add("abstract");
+            add("class");
+            add("extends");
+            add("implements");
+            add("strictfp");
+            add("true");
+            add("false");
+            add("do");
+            add("double");
+            add("goto");
+            add("enum");
+            add("if");
+            add("new");
+            add("static");
+            add("transient");
+            add("short");
+            add("throws");
+            add("long");
+            add("for");
+            add("native");
+            add("else");
+            add("catch");
+            add("char");
+            add("case");
+            add("return");
+            add("break");
+            add("default");
+            add("throw");
+            add("interface");
+            add("public");
+            add("this");
+            add("while");
+            add("float");
+            add("finally");
+            add("int");
+            add("boolean");
+            add("continue");
+            add("protected");
+            add("final");
+            add("instanceof");
+            add("synchronized");
+            add("volatile");
+            add("switch");
+            add("assert");
+            add("const");
+            add("private");
+            add("void");
+            add("import");
+            add("package");
+            add("super");
+            add("try");
+        }};
         //读取正规式文件和单词文件
         String readWordsFileString = readFile(filePath, " ");
         String readRegularFormString = readFile(regularFormFilePath, "\n");
