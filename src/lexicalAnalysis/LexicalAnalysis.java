@@ -111,25 +111,30 @@ class LexicalAnalysis {
                     if (!cell.equals("")) {
                         boolean isRight = false;
                         System.out.println(cell);
-                        int i = 0;
-                        for (; i < len; i++) {
-                            Result result = miniDfaResultList.get(i);
-                            if (result.isTrue()) {
-                                miniDFA = result.getMiniDFA();
-                                characters = result.getCharacters();
-                                isRight = legitimacy(miniDFA, cell, characters);
+                        if (keyWordSet.contains(cell)){
+                            writer.append(cell + ": " + true + " Java关键字");
+                            System.out.println("合法性判断结果： " + true +  " Java关键字");
+                        }else {
+                            int i = 0;
+                            for (; i < len; i++) {
+                                Result result = miniDfaResultList.get(i);
+                                if (result.isTrue()) {
+                                    miniDFA = result.getMiniDFA();
+                                    characters = result.getCharacters();
+                                    isRight = legitimacy(miniDFA, cell, characters);
+                                }
+                                if (isRight) {
+                                    break;
+                                }
                             }
                             if (isRight) {
-                                break;
+                                // 写入到缓冲区
+                                writer.append(cell + ": " + isRight + " 符合第" + (i + 1) + "个正规式: " + regularFormList.get(i));
+                                System.out.println("合法性判断结果： " + isRight + "  符合第" + (i + 1) + "个正规式: " + regularFormList.get(i));
+                            } else {
+                                writer.append(cell + ":" + isRight);
+                                System.out.println("合法性判断结果： " + isRight);
                             }
-                        }
-                        if (isRight) {
-                            // 写入到缓冲区
-                            writer.append(cell + ": " + isRight + " 符合第" + (i + 1) + "个正规式: " + regularFormList.get(i));
-                            System.out.println("合法性判断结果： " + isRight + "  符合第" + (i + 1) + "个正规式: " + regularFormList.get(i));
-                        } else {
-                            writer.append(cell + ":" + isRight);
-                            System.out.println("合法性判断结果： " + isRight);
                         }
                         // 换行
                         writer.append("\r\n");
