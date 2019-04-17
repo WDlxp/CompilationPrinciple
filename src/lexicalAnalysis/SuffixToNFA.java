@@ -149,7 +149,7 @@ public class SuffixToNFA {
                 continue;
             }
             //判断是否为操作数
-            boolean isOperand = ch != '.' && ch != '*' && ch != '|';
+            boolean isOperand = ch != '-' && ch != '*' && ch != '|';
             /* 如果是操作数则直接加上状态和条件然后放入栈中即可 */
             if (isOperand) {
                 List<Integer> stateList = new ArrayList<>();
@@ -209,7 +209,7 @@ public class SuffixToNFA {
             HashSet<Character> firstCharSet = firstNfa.getCharacterSet();
             List<Side> firstMoveList = firstNfa.getMoveList();
             //如果遇到操作符.则从栈中取出两个nfa操作完后将新的NFA入栈
-            if (ch == '.') {
+            if (ch == '-') {
                 int len = firstStateList.size();
                 int firstStartIndex = firstNfa.getStartIndex();
                 int nextFinishIndex = nextNfa.getFinishIndex();

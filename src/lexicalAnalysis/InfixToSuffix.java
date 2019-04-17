@@ -10,7 +10,7 @@ package lexicalAnalysis;
  * 6.根据前后两个字符判断是否需要加.
  * 7.完成运算返回输入是否错误，后缀表达式即suffixStr
  * <p>
- * . 代表连接
+ * - 代表连接
  * | 代表或运算
  * * 代表闭包
  *
@@ -118,7 +118,7 @@ public class InfixToSuffix {
             boolean addSituation = (nowFlag == -1) && (nextFlag == -1 || nextFlag == 5) || (nowFlag == 6) && (nextFlag == -1 || nextFlag == 5) || (nowFlag == 4) && (nextFlag == -1 || nextFlag == 5);
             if (addSituation) {
                 /*连续两个操作数*/
-                op = '.';
+                op = '-';
             } else {
                 /*无需增加操作.则将下一个字符串赋值给op,下标给i*/
                 i = nextIndex;
@@ -146,7 +146,7 @@ public class InfixToSuffix {
                 return 1;
             case '|':
                 return 2;
-            case '.':
+            case '-':
                 return 3;
             case '*':
                 return 4;
