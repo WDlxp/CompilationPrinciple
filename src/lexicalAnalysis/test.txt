@@ -1,6 +1,7 @@
 int main(){
  int x=3.75;
  int abc=3;
+ String string="abc";
  if(x==abc) {
     return true;
  }
