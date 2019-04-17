@@ -21,60 +21,73 @@ class LexicalAnalysis {
         //关键字集合
         HashSet keyWordSet = new HashSet() {{
             add("abstract");
-            add("class");
-            add("extends");
-            add("implements");
-            add("strictfp");
-            add("true");
-            add("false");
-            add("do");
-            add("double");
-            add("goto");
-            add("enum");
-            add("if");
-            add("new");
-            add("static");
-            add("transient");
-            add("short");
-            add("throws");
-            add("long");
-            add("for");
-            add("native");
-            add("else");
+            add("assert");
+            add("boolean");
+            add("break");
+            add("byte");
+            add("case");
             add("catch");
             add("char");
-            add("case");
-            add("return");
-            add("break");
-            add("default");
-            add("throw");
-            add("interface");
-            add("public");
-            add("this");
-            add("while");
-            add("float");
-            add("finally");
-            add("int");
-            add("boolean");
+            add("class");
             add("continue");
-            add("protected");
+            add("default");
+            add("do");
+            add("double");
+            add("else");
+            add("enum");
+            add("extends");
             add("final");
-            add("instanceof");
-            add("synchronized");
-            add("volatile");
-            add("switch");
-            add("assert");
-            add("const");
-            add("private");
-            add("void");
+            add("finally");
+            add("float");
+            add("for");
+            add("if");
+            add("implements");
             add("import");
+            add("instanceof");
+            add("int");
+            add("interface");
+            add("long");
+            add("native");
+            add("new");
             add("package");
+            add("private");
+            add("protected");
+            add("public");
+            add("return");
+            add("short");
+            add("static");
+            add("strictfp");
             add("super");
+            add("switch");
+            add("synchronized");
+            add("this");
+            add("throw");
+            add("throws");
+            add("transient");
             add("try");
+            add("void");
+            add("volatile");
+            add("while");
         }};
+        //标志符集合
+        HashSet reservedwordset = new HashSet(){{
+            add("goto");
+            add("const");
+        }};
+        //标志符集合
+        HashSet flagSet = new HashSet(){{
+            add("null");
+            add("true");
+            add("false");
+        }};
+
         //读取正规式文件和单词文件
         String readWordsFileString = readFile(filePath, " ");
         String readRegularFormString = readFile(regularFormFilePath, "\n");
+        //分割字符,预处理文件内容
+        String readWordsFileString1 = chuli(readWordsFileString);
+        System.out.println("文件内容："+ readWordsFileString);
+        System.out.println("处理后文件内容："+readWordsFileString1);
 
         //放置正规式返回的miniDFA的集合
         ArrayList<Result> miniDfaResultList = new ArrayList<>();
@@ -106,7 +119,7 @@ class LexicalAnalysis {
             char[] characters = null;
 
             if (!readWordsFileString.isEmpty()) {
-                String[] division = readWordsFileString.split(" ");
+                String[] division = readWordsFileString1.split(" ");
                 for (String cell : division) {
                     if (!cell.equals("")) {
                         boolean isRight = false;
@@ -114,6 +127,12 @@ class LexicalAnalysis {
                         if (keyWordSet.contains(cell)){
                             writer.append(cell + ": " + true + " Java关键字");
                             System.out.println("合法性判断结果： " + true +  " Java关键字");
+                        }else if (reservedwordset.contains(cell)){
+                            writer.append(cell + ": " + true + " Java保留字");
+                            System.out.println("合法性判断结果： " + true +  " Java保留字");
+                        }else if (flagSet.contains(cell)){
+                            writer.append(cell + ": " + true + " Java标志符");
+                            System.out.println("合法性判断结果： " + true +  " Java标志符");
                         }else {
                             int i = 0;
                             for (; i < len; i++) {
@@ -267,5 +286,48 @@ class LexicalAnalysis {
             }
         }
         return miniDFA[current][characters.length] == 1;
+    }
+    private static String chuli(String string) {
+        HashSet yunSuanFuSet = new HashSet() {{
+            add("=");
+            add("+");
+            add("-");
+            add("<");
+            add(">");
+            add("/");
+            add("(");
+            add(")");
+            add("{");
+            add("}");
+        }};
+        HashSet fenGeFuSet = new HashSet() {{
+            add(";");
+            add(":");
+            add("|");
+            add("1");
+        }};
+        StringBuilder stringBuilder = new StringBuilder();
+        boolean isyunsuanfu = true;
+        StringBuilder same = new StringBuilder();
+        for (int i = 0; i < string.length(); i++) {
+            char op = string.charAt(i);
+            if (yunSuanFuSet.contains(String.valueOf(op))) {
+                //是运算符
+                same.append(op);
+                isyunsuanfu = true;
+            }else if (fenGeFuSet.contains(String.valueOf(op))){
+                stringBuilder.append(" ").append(op).append(" ");
+            }else {
+                //不是运算符
+                if (isyunsuanfu){
+                    //上一个是运算符
+                    stringBuilder.append(" ").append(same.toString()).append(" ");
+                    same.delete(0,same.length());
+                    isyunsuanfu = false;
+                }
+                stringBuilder.append(op);
+            }
+        }
+        return stringBuilder.toString();
     }
 }
