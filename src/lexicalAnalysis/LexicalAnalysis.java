@@ -125,14 +125,14 @@ class LexicalAnalysis {
                         boolean isRight = false;
                         System.out.println(cell);
                         if (keyWordSet.contains(cell)){
-                            writer.append(cell + ": " + true + " Java关键字");
-                            System.out.println("合法性判断结果： " + true +  " Java关键字");
+                            writer.append(cell + "\n合法性：" + true + " Java关键字");
+                            System.out.println("合法性：" + true +  " Java关键字");
                         }else if (reservedwordset.contains(cell)){
-                            writer.append(cell + ": " + true + " Java保留字");
-                            System.out.println("合法性判断结果： " + true +  " Java保留字");
+                            writer.append(cell + "\n" + true + " Java保留字");
+                            System.out.println("合法性： " + true +  " Java保留字");
                         }else if (flagSet.contains(cell)){
-                            writer.append(cell + ": " + true + " Java标志符");
-                            System.out.println("合法性判断结果： " + true +  " Java标志符");
+                            writer.append(cell + "\n " + true + " Java标志符");
+                            System.out.println("合法性： " + true +  " Java标志符");
                         }else {
                             int i = 0;
                             for (; i < len; i++) {
@@ -148,11 +148,11 @@ class LexicalAnalysis {
                             }
                             if (isRight) {
                                 // 写入到缓冲区
-                                writer.append(cell + ": " + isRight + " 符合第" + (i + 1) + "个正规式: " + regularFormList.get(i));
-                                System.out.println("合法性判断结果： " + isRight + "  符合第" + (i + 1) + "个正规式: " + regularFormList.get(i));
+                                writer.append(cell + "\n合法性： " + isRight + " 符合第" + (i + 1) + "个正规式: " + regularFormList.get(i));
+                                System.out.println("合法性： " + isRight + "  符合第" + (i + 1) + "个正规式: " + regularFormList.get(i));
                             } else {
-                                writer.append(cell + ":" + isRight);
-                                System.out.println("合法性判断结果： " + isRight);
+                                writer.append(cell + "\n合法性： " + isRight);
+                                System.out.println("合法性： " + isRight);
                             }
                         }
                         // 换行
