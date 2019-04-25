@@ -63,19 +63,19 @@ class LexicalAnalysisSecondMethod {
                             writer.append(cell + "\n合法性：" + true + " Java关键字");
                             System.out.println("合法性：" + true + " Java关键字");
                         } else if (SymbolSets.RESERVED_WORD_SET.contains(cell)) {
-                            writer.append(cell + "\n" + true + " Java保留字");
+                            writer.append(cell + "\n合法性：" + true + " Java保留字");
                             System.out.println("合法性： " + true + " Java保留字");
                         } else if (SymbolSets.FLAG_SET.contains(cell)) {
-                            writer.append(cell + "\n " + true + " Java标志符");
+                            writer.append(cell + "\n合法性：" + true + " Java标志符");
                             System.out.println("合法性： " + true + " Java标志符");
                         } else if (SymbolSets.OPERATOR_SET.contains(cell)) {
-                            writer.append(cell + "\n " + true + " Java运算符");
+                            writer.append(cell + "\n合法性：" + true + " Java运算符");
                             System.out.println("合法性： " + true + " Java运算符");
                         } else if (SymbolSets.SPLITTER_SET.contains(cell)) {
-                            writer.append(cell + "\n " + true + " Java分割符");
+                            writer.append(cell + "\n合法性：" + true + " Java分割符");
                             System.out.println("合法性： " + true + " Java分割符");
                         } else if (cell.charAt(0) == '"' && cell.charAt(cell.length() - 1) == '"') {
-                            writer.append(cell + "\n " + true + " Java字符串符");
+                            writer.append(cell + "\n合法性：" + true + " Java字符串符");
                             System.out.println("合法性： " + true + " Java字符串");
                         } else {
                             int i = 0;
@@ -378,20 +378,25 @@ class LexicalAnalysisSecondMethod {
         for (int index = 1; index < len; index++) {
             ch = wordString.charAt(index);
             currentType = witchTypeSet(ch);
-            if (currentType==1){
-                resultWordsArrayList.add(ch+"");
-                lastType=1;
+            if (currentType == 1) {
+                if (tempWordString.length() != 0 && tempWordString.charAt(0) != ' ') {
+                    resultWordsArrayList.add(tempWordString.toString());
+                    //清空字符串
+                    tempWordString.delete(0, tempWordString.length());
+                }
+                resultWordsArrayList.add(ch + "");
             } else if (currentType == lastType) {
                 tempWordString.append(ch);
             } else {
-                if (tempWordString.charAt(0) != ' ') {
+                if (tempWordString.length() != 0 && tempWordString.charAt(0) != ' ') {
                     resultWordsArrayList.add(tempWordString.toString());
+
                 }
-                lastType = currentType;
                 //清空字符串
                 tempWordString.delete(0, tempWordString.length());
                 tempWordString.append(ch);
             }
+            lastType = currentType;
         }
         return resultWordsArrayList;
     }
@@ -424,6 +429,7 @@ class LexicalAnalysisSecondMethod {
         add(')');
         add('{');
         add('}');
+        add('"');
     }};
 
     /**
