@@ -325,7 +325,6 @@ class LexicalAnalysisSecondMethod {
                 miniDfaResult.setTrue(false);
                 return miniDfaResult;
             }
-
         } else {
             miniDfaResult.setTrue(false);
         }

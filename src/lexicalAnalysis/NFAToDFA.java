@@ -130,7 +130,7 @@ public class NFAToDFA {
                     }
                 }
                 if (tempCount == oldTempCount) {
-                    System.out.println("输入正规式成环目前未能解决");
+                    System.out.println("输入正规式或闭包成环目前未能解决");
                     return null;
                 }
             }
