@@ -5,7 +5,13 @@ int main(){
  float y=x+abc;
  double $_z=abc%y;
  String string="abc";
+ boolean result=y instanceOf String;
  if(x==abc){
     return true;
  }
+
+ instanceOf
+ <<=
+ >>>
+ >>>>
 }

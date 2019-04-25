@@ -380,6 +380,7 @@ class LexicalAnalysisSecondMethod {
             currentType = witchTypeSet(ch);
             if (currentType==1){
                 resultWordsArrayList.add(ch+"");
+                lastType=1;
             } else if (currentType == lastType) {
                 tempWordString.append(ch);
             } else {
