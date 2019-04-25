@@ -74,10 +74,7 @@ class LexicalAnalysisSecondMethod {
                         } else if (SymbolSets.SPLITTER_SET.contains(cell)) {
                             writer.append(cell + "\n合法性：" + true + " Java分割符");
                             System.out.println("合法性： " + true + " Java分割符");
-                        } else if (cell.charAt(0) == '"' && cell.charAt(cell.length() - 1) == '"') {
-                            writer.append(cell + "\n合法性：" + true + " Java字符串符");
-                            System.out.println("合法性： " + true + " Java字符串");
-                        } else {
+                        }else {
                             int i = 0;
                             for (; i < len; i++) {
                                 Result result = miniDfaResultList.get(i);
@@ -232,6 +229,9 @@ class LexicalAnalysisSecondMethod {
             add(")");
             add("{");
             add("}");
+            add("[");
+            add("]");
+            add(",");
         }};
     }
 
@@ -390,7 +390,6 @@ class LexicalAnalysisSecondMethod {
             } else {
                 if (tempWordString.length() != 0 && tempWordString.charAt(0) != ' ') {
                     resultWordsArrayList.add(tempWordString.toString());
-
                 }
                 //清空字符串
                 tempWordString.delete(0, tempWordString.length());
@@ -430,6 +429,9 @@ class LexicalAnalysisSecondMethod {
         add('{');
         add('}');
         add('"');
+        add('[');
+        add(']');
+        add(',');
     }};
 
     /**
