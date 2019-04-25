@@ -1,8 +1,11 @@
 int main(){
  int x=3.75;
+ x+=5.7;
  int abc=3;
+ float y=x+abc;
+ double $_z=abc%y;
  String string="abc";
- if(x==abc) {
+ if(x==abc){
     return true;
  }
 }

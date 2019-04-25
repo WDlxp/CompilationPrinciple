@@ -7,7 +7,7 @@ import java.util.HashSet;
 /**
  * @author wdl
  */
-class LexicalAnalysis {
+class LexicalAnalysisSecondMethod {
     /**
      * 词法分析
      *
@@ -22,10 +22,8 @@ class LexicalAnalysis {
         //读取正规式文件和单词文件
         String readWordsFileString = readFile(filePath, " ");
         String readRegularFormString = readFile(regularFormFilePath, "\n");
-        //分割字符,预处理文件内容
-        String readWordsFileString1 = operatorAddSpace(readWordsFileString);
-        System.out.println("文件内容：" + readWordsFileString);
-        System.out.println("处理后文件内容：" + readWordsFileString1);
+
+        ArrayList<String> splitWordsString = splitWords(readWordsFileString);
 
         //放置正规式返回的miniDFA的集合
         ArrayList<Result> miniDfaResultList = new ArrayList<>();
@@ -57,8 +55,7 @@ class LexicalAnalysis {
             char[] characters = null;
 
             if (!readWordsFileString.isEmpty()) {
-                String[] division = readWordsFileString1.split(" ");
-                for (String cell : division) {
+                for (String cell : splitWordsString) {
                     if (!cell.equals("")) {
                         boolean isRight = false;
                         System.out.println(cell);
@@ -193,21 +190,37 @@ class LexicalAnalysis {
          */
         static final HashSet OPERATOR_SET = new HashSet() {{
             add("=");
+            add("==");
+            add("!=");
+            add(">=");
+            add("<=");
+            add("+=");
+            add("-=");
+            add("*=");
+            add("<<=");
+            add(">>=");
+            add("&=");
+            add("^=");
+            add("|=");
             add("+");
+            add("++");
             add("-");
+            add("--");
+            add("*");
             add("<");
             add(">");
             add("/");
-            add("(");
-            add(")");
-            add("{");
-            add("}");
             add("!");
             add("%");
             add("^");
             add("|");
             add("&");
+            add("<<");
+            add(">>");
+            add(">>>");
             add("~");
+            add(":");
+            add("?");
         }};
 
         /**
@@ -215,8 +228,10 @@ class LexicalAnalysis {
          */
         static final HashSet SPLITTER_SET = new HashSet() {{
             add(";");
-            add(":");
-            add("|");
+            add("(");
+            add(")");
+            add("{");
+            add("}");
         }};
     }
 
@@ -339,36 +354,93 @@ class LexicalAnalysis {
         return miniDFA[current][characters.length] == 1;
     }
 
+    //新思路写的部分
+
     /**
-     * 运算符两边加上空格辅助后续分割
+     * 为应该有空格而没有空格的地方添加空格
      *
-     * @param string 传入要处理的字符串
-     * @return 返回处理后的字符串
+     * @param wordString 单词字符集
+     * @return 返回添加后人的单词字符串
      */
-    private static String operatorAddSpace(String string) {
-        StringBuilder stringBuilder = new StringBuilder();
-        boolean isOperator = true;
-        StringBuilder same = new StringBuilder();
-        for (int i = 0; i < string.length(); i++) {
-            char op = string.charAt(i);
-            if (SymbolSets.OPERATOR_SET.contains(String.valueOf(op))) {
-                //是运算符
-                same.append(op);
-                isOperator = true;
-            } else if (SymbolSets.SPLITTER_SET.contains(String.valueOf(op))) {
-                stringBuilder.append(" ").append(op).append(" ");
+    private static ArrayList<String> splitWords(String wordString) {
+        ArrayList<String> resultWordsArrayList = new ArrayList<>();
+        //每次截取的单词串
+        StringBuilder tempWordString = new StringBuilder();
+        int len = wordString.length();
+        //每次取出的字符
+        char ch;
+        //记录前一个字符以及后一个字符的类型并且使用第一个字符进行初始化
+        ch = wordString.charAt(0);
+        int lastType = witchTypeSet(ch);
+        tempWordString.append(ch);
+        int currentType;
+
+        for (int index = 1; index < len; index++) {
+            ch = wordString.charAt(index);
+            currentType = witchTypeSet(ch);
+            if (currentType==1){
+                resultWordsArrayList.add(ch+"");
+            } else if (currentType == lastType) {
+                tempWordString.append(ch);
             } else {
-                //不是运算符
-                if (isOperator) {
-                    //上一个是运算符
-                    stringBuilder.append(" ").append(same.toString()).append(" ");
-                    same.delete(0, same.length());
-                    isOperator = false;
+                if (tempWordString.charAt(0) != ' ') {
+                    resultWordsArrayList.add(tempWordString.toString());
                 }
-                stringBuilder.append(op);
+                lastType = currentType;
+                //清空字符串
+                tempWordString.delete(0, tempWordString.length());
+                tempWordString.append(ch);
             }
         }
-        return stringBuilder.toString();
+        return resultWordsArrayList;
+    }
+
+    /**
+     * 组成运算符的Char集合
+     */
+    static HashSet<Character> operatorCharSet = new HashSet<>() {{
+        add('=');
+        add('+');
+        add('-');
+        add('<');
+        add('>');
+        add('/');
+        add('!');
+        add('%');
+        add('^');
+        add('|');
+        add('&');
+        add('~');
+    }};
+
+    /**
+     * 组成分割符的Char集合
+     */
+    static HashSet<Character> splitterCharSet = new HashSet<>() {{
+        add(';');
+        add(':');
+        add('(');
+        add(')');
+        add('{');
+        add('}');
+    }};
+
+    /**
+     * 传入单个字符，判断单个字符属于哪种类型
+     *
+     * @param ch 传入的单个字符
+     * @return 返回该传入字符属于的集合0代表操作数集合，1代表分隔符集合，2代表空格,3代表普通字符集合
+     */
+    public static int witchTypeSet(char ch) {
+        if (operatorCharSet.contains(ch)) {
+            return 0;
+        } else if (splitterCharSet.contains(ch)) {
+            return 1;
+        } else if (' ' == ch) {
+            return 2;
+        } else {
+            return 3;
+        }
     }
 
 }

@@ -14,7 +14,8 @@ public class Main {
         boolean isPrint = false;
 
         try {
-            LexicalAnalysis.lexicalAnalysis(wordsFilePath, regularFormFilePath, resultFilePath, isPrint);
+//            LexicalAnalysis.lexicalAnalysis(wordsFilePath, regularFormFilePath, resultFilePath, isPrint);
+            LexicalAnalysisSecondMethod.lexicalAnalysis(wordsFilePath, regularFormFilePath, resultFilePath, isPrint);
         } catch (IOException e) {
             e.printStackTrace();
         }
