@@ -74,7 +74,7 @@ class LexicalAnalysisSecondMethod {
                         } else if (SymbolSets.SPLITTER_SET.contains(cell)) {
                             writer.append(cell + "\n合法性：" + true + " Java分割符");
                             System.out.println("合法性： " + true + " Java分割符");
-                        }else {
+                        } else {
                             int i = 0;
                             for (; i < len; i++) {
                                 Result result = miniDfaResultList.get(i);
@@ -310,11 +310,22 @@ class LexicalAnalysisSecondMethod {
             int i = -1;
             char[] characters = new char[nfa.getCharacterSet().size()];
             for (char ch : nfa.getCharacterSet()) {
+                if (ch == '(' || ch == ')') {
+                    miniDfaResult.setTrue(false);
+                    return miniDfaResult;
+                }
                 characters[++i] = ch;
             }
             miniDfaResult.setCharacters(characters);
-            miniDfaResult.setMiniDFA(NFAToDFA.changeNFAToDFA(nfa, print));
-            miniDfaResult.setTrue(true);
+            int[][] miniDFA = NFAToDFA.changeNFAToDFA(nfa, print);
+            if (miniDFA != null) {
+                miniDfaResult.setMiniDFA(miniDFA);
+                miniDfaResult.setTrue(true);
+            } else {
+                miniDfaResult.setTrue(false);
+                return miniDfaResult;
+            }
+
         } else {
             miniDfaResult.setTrue(false);
         }

@@ -22,6 +22,8 @@ public class NFAToDFA {
     public static void main(String[] args) {
         String regularFormString = "(((a b|b )*(ab|c.d))*)*";
         regularFormString = "int ab";
+        regularFormString="a*(ab*)a";
+        regularFormString="a(ε|a)*";
         StringBuilder result = new StringBuilder();
         System.out.println("正规式为：" + regularFormString);
 

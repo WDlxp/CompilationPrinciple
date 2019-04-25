@@ -28,6 +28,7 @@ public class InfixToSuffix {
     public static void main(String[] args) {
         String string = "(a b|e.d)|abcd*";
         string = "int  ab";
+        string="a*(ab*(a";
         StringBuilder result = new StringBuilder();
         if (change(string, result) == 0) {
             System.out.println(result);
