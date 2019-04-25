@@ -9,7 +9,8 @@ int main(){
  if(x==abc){
     return true;
  }
-
+ 0x78F
+ 0XA27s88
  instanceOf
  <<=
  >>>
