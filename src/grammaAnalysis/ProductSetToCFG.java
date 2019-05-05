@@ -9,22 +9,6 @@ import java.util.HashSet;
  */
 public class ProductSetToCFG {
     public static void main(String[] args) {
-        String product1 = "Aab|Bc|Ac";
-        String product2 = "BAb|bc|Ac|bC";
-        String product3 = "Cab|bA|bd";
-        String product4 = "Cab|df";
-        ArrayList<String> productSet = new ArrayList<>();
-        productSet.add(product1);
-        productSet.add(product2);
-        productSet.add(product3);
-        productSet.add(product4);
-        CFG cfg=pToCFG(productSet);
-//        cfg=pToCFG(null);
-        if (sError == 0) {
-            showCFG(cfg);
-        }else if (sError==P_IS_NULL){
-            System.out.println("产生式集合为空，请检查输入的产生式集合");
-        }
     }
 
     /**
