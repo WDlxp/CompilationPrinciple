@@ -7,7 +7,7 @@ import java.util.ArrayList;
  */
 public class TestMain {
     public static void main(String[] args) {
-        String product1 = "Aab|Bc|Ac";
+        String product1 = "Aab|Ac";
         String product2 = "BAb|bc|Ac|bC";
         String product3 = "Cab|bA|bd";
         String product4 = "Cab|df";
@@ -20,7 +20,12 @@ public class TestMain {
 //        cfg=pToCFG(null);
         if (ProductSetToCFG.sError == 0) {
             ProductSetToCFG.showCFG(cfg);
-            EliminateLeftRecursion.eliminateLeftRecursion(cfg);
+            ProductSetToCFG.CFG newCfg=EliminateLeftRecursion.eliminateLeftRecursion(cfg);
+            if (EliminateLeftRecursion.sError==0){
+                ProductSetToCFG.showCFG(newCfg);
+            } else if (EliminateLeftRecursion.sError==EliminateLeftRecursion.UNABLE_TO_ELIMINATE_LEFT_RECURSION){
+                System.out.println("存在无法消除的左递归，不符合LL(1)文法");
+            }
         }else if (ProductSetToCFG.sError==ProductSetToCFG.P_IS_NULL){
             System.out.println("产生式集合为空，请检查输入的产生式集合");
         }
