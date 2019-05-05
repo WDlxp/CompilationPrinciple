@@ -8,7 +8,7 @@ import java.util.HashSet;
  *
  * @author wdl
  */
-public class PToCFG {
+public class ProductSetToCFG {
     public static void main(String[] args) {
         String product1 = "Aab|Bc|Ac";
         String product2 = "BAb|bc|Ac|bC";
