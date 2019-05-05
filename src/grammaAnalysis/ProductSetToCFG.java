@@ -58,12 +58,12 @@ public class ProductSetToCFG {
             nonTerminatorSet.add(product.charAt(0));
         }
         //获取终态集
-        for (String pItem : productSet) {
+        for (String product : productSet) {
             char ch;
             //从下标1开始扫描产生式右边
-            for (int index = 1; index < pItem.length(); index++) {
+            for (int index = 1; index < product.length(); index++) {
                 //获取字符
-                ch = pItem.charAt(index);
+                ch = product.charAt(index);
                 //不是非终结符且不是|则放入终结符中
                 if (!nonTerminatorSet.contains(ch) && ch != '|') {
                     terminatorSet.add(ch);
