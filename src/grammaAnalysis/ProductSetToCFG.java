@@ -22,7 +22,7 @@ public class ProductSetToCFG {
 //        cfg=pToCFG(null);
         if (sError == 0) {
             showCFG(cfg);
-        }else if (sError==1){
+        }else if (sError==P_IS_NULL){
             System.out.println("产生式集合为空，请检查输入的产生式集合");
         }
     }
