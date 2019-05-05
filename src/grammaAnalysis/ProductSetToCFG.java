@@ -54,8 +54,8 @@ public class ProductSetToCFG {
         char start = productSet.get(0).charAt(0);
 
         //获取非终态集
-        for (String pItem : productSet) {
-            nonTerminatorSet.add(pItem.charAt(0));
+        for (String product : productSet) {
+            nonTerminatorSet.add(product.charAt(0));
         }
         //获取终态集
         for (String pItem : productSet) {
