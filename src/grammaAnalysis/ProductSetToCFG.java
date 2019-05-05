@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 /**
- * 将产生式集合P转化为CFG
- *
+ * 1.将产生式集合P转化为CFG
  * @author wdl
  */
 public class ProductSetToCFG {
