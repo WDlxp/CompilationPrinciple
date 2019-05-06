@@ -30,6 +30,8 @@ public class EliminateLeftRecursion {
         sError=0;
         //获取非终结符集合
         HashSet<Character> nonTerminatorSet = cfg.nonTerminatorSet;
+        //获取终结符集合
+        HashSet<Character> terminatorSet=cfg.terminatorSet;
         //标记已使用的字符
         NewChar.flagUsedChar(nonTerminatorSet);
         //获取产生式集合
@@ -82,6 +84,7 @@ public class EliminateLeftRecursion {
                 }
                 //尾部加上'ε'
                 newProductRights.add("ε");
+                terminatorSet.add('ε');
                 //添加到新的产生式集合中
                 newProductSet.add(new ProductSetToCFG.Product(productStart,oldProductRights));
                 newProductSet.add(new ProductSetToCFG.Product(newProductStart,newProductRights));
@@ -89,9 +92,17 @@ public class EliminateLeftRecursion {
                 newProductSet.add(product);
             }
         }
-        return new ProductSetToCFG.CFG(cfg.terminatorSet,nonTerminatorSet,cfg.start,newProductSet);
+        return new ProductSetToCFG.CFG(terminatorSet,nonTerminatorSet,cfg.start,newProductSet);
     }
 
+    /**
+     * 隐式左递归转显式左递归
+     * @param cfg 输入CFG
+     * @return 返回装换隐式左递归完成的CFG
+     */
+    public static ProductSetToCFG.CFG implicitToExplicit(ProductSetToCFG.CFG cfg){
+        return null;
+    }
     /**
      * 获取新的不重复字符的方法
      */
