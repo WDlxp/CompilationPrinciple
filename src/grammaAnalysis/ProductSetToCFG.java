@@ -46,6 +46,8 @@ public class ProductSetToCFG {
             this.left = left;
             this.rights = rights;
         }
+        HashSet<Character> first=null;
+        HashSet<Character> follow=null;
     }
 
     /**
