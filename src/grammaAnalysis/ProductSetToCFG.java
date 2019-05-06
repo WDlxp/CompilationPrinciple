@@ -46,8 +46,9 @@ public class ProductSetToCFG {
             this.left = left;
             this.rights = rights;
         }
-        HashSet<Character> first=null;
-        HashSet<Character> follow=null;
+
+        HashSet<Character> first = null;
+        HashSet<Character> follow = null;
     }
 
     /**
@@ -83,7 +84,8 @@ public class ProductSetToCFG {
         //产生式数组
         ArrayList<Product> newProductSet = new ArrayList<>();
         ArrayList<String> rights;
-
+        //标记产生式的左边是否存在
+        boolean sExitLeft;
         //获取终态集
         for (String product : productSet) {
             char ch;
@@ -104,8 +106,18 @@ public class ProductSetToCFG {
                     }
                 }
             }
-            //创建一个新的产生式并加入产生式数组中
-            newProductSet.add(new Product(product.charAt(0), rights));
+            sExitLeft = false;
+            for (int index = 0; index < newProductSet.size(); index++) {
+                //如果已经存在产生式的左边，则直接加上右边即可
+                if (newProductSet.get(index).left == product.charAt(0)) {
+                    newProductSet.get(index).rights.addAll(rights);
+                    sExitLeft = true;
+                }
+            }
+            if (!sExitLeft) {
+                //创建一个新的产生式并加入产生式数组中
+                newProductSet.add(new Product(product.charAt(0), rights));
+            }
         }
         return new CFG(terminatorSet, nonTerminatorSet, start, newProductSet);
     }
