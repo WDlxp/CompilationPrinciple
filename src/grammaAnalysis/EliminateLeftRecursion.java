@@ -19,6 +19,7 @@ public class EliminateLeftRecursion {
      */
     static int sError=0;
     public static final int UNABLE_TO_ELIMINATE_LEFT_RECURSION=1;
+    public static final int SYMBOL_OVERFLOW=2;
     /**
      * 消除左递归（显式）
      *
@@ -63,6 +64,10 @@ public class EliminateLeftRecursion {
                 }
                 //获取新的产生式字符
                 char newProductStart=NewChar.getNewChar(nonTerminatorSet);
+
+                if (newProductStart==' '){
+                    sError=SYMBOL_OVERFLOW;
+                }
                 //新旧两个产生式右边的集合
                 ArrayList<String> oldProductRights=new ArrayList<>();
                 ArrayList<String> newProductRights=new ArrayList<>();

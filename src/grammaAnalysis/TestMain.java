@@ -25,6 +25,8 @@ public class TestMain {
                 ProductSetToCFG.showCFG(newCfg);
             } else if (EliminateLeftRecursion.sError==EliminateLeftRecursion.UNABLE_TO_ELIMINATE_LEFT_RECURSION){
                 System.out.println("存在无法消除的左递归，不符合LL(1)文法");
+            }else if (EliminateLeftRecursion.sError==EliminateLeftRecursion.SYMBOL_OVERFLOW){
+                System.out.println("超出可使用的字符集，无法处理");
             }
         }else if (ProductSetToCFG.sError==ProductSetToCFG.P_IS_NULL){
             System.out.println("产生式集合为空，请检查输入的产生式集合");
