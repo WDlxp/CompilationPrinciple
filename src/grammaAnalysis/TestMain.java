@@ -1,6 +1,7 @@
 package grammaAnalysis;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  * @author wdl
@@ -20,9 +21,14 @@ public class TestMain {
 //        cfg=pToCFG(null);
         if (ProductSetToCFG.sError == 0) {
             ProductSetToCFG.showCFG(cfg);
-            ProductSetToCFG.CFG newCfg=EliminateLeftRecursion.eliminateLeftRecursion(cfg);
+            ProductSetToCFG.CFG cfg1=EliminateLeftRecursion.eliminateLeftRecursion(cfg);
             if (EliminateLeftRecursion.sError==0){
-                ProductSetToCFG.showCFG(newCfg);
+                ProductSetToCFG.showCFG(cfg1);
+                ProductSetToCFG.CFG cfg2=FirstAndFollow.firstAndFollow(cfg1);
+                ArrayList<ProductSetToCFG.Product> productSet1=cfg2.productSet;
+                for (ProductSetToCFG.Product product:productSet1){
+                    System.out.println(product.first);
+                }
             } else if (EliminateLeftRecursion.sError==EliminateLeftRecursion.UNABLE_TO_ELIMINATE_LEFT_RECURSION){
                 System.out.println("存在无法消除的左递归，不符合LL(1)文法");
             }else if (EliminateLeftRecursion.sError==EliminateLeftRecursion.SYMBOL_OVERFLOW){
