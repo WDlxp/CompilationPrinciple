@@ -128,6 +128,8 @@ public class ProductSetToCFG {
      * @param cfg
      */
     public static void showCFG(CFG cfg) {
+        //打印CFG
+        System.out.println("----------------CFG-----------------");
         //打印非终结符
         System.out.println("终结符T:" + cfg.terminatorSet);
         //打印终结符
@@ -142,7 +144,16 @@ public class ProductSetToCFG {
             for (int index = 0; index < rights.size() - 1; index++) {
                 System.out.print(rights.get(index) + "|");
             }
-            System.out.println(rights.get(rights.size() - 1));
+            System.out.print(rights.get(rights.size() - 1));
+            if (product.first != null) {
+                System.out.print("\t\tFirst集：");
+                System.out.print(product.first);
+            }
+            if (product.follow != null) {
+                System.out.print("\tFollow集：");
+                System.out.print(product.follow);
+            }
+            System.out.println();
         }
     }
 }

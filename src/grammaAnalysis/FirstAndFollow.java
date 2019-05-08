@@ -13,13 +13,15 @@ import java.util.HashSet;
 public class FirstAndFollow {
     public static void main(String[] args) {
         //测试用例1
-        String product1 = "EE+T|T";
-        String product2 = "TT*F|F";
-        String product3 = "Fi|(E)";
+        String product1 = "S(L)|aA";
+        String product2 = "AS|ε";
+        String product3 = "LSB";
+        String product4 = "B,SB|ε";
         ArrayList<String> productSet = new ArrayList<>();
         productSet.add(product1);
         productSet.add(product2);
         productSet.add(product3);
+        productSet.add(product4);
         ProductSetToCFG.CFG cfg = ProductSetToCFG.pToCFG(productSet);
 //        cfg=pToCFG(null);
         if (ProductSetToCFG.sError == 0) {
@@ -28,14 +30,7 @@ public class FirstAndFollow {
             if (EliminateLeftRecursion.sError == 0) {
                 ProductSetToCFG.showCFG(cfg1);
                 ProductSetToCFG.CFG cfg2 = FirstAndFollow.getFirstAndFollow(cfg1);
-                ArrayList<ProductSetToCFG.Product> productSet1 = cfg2.productSet;
-                for (ProductSetToCFG.Product product : productSet1) {
-                    System.out.print("\nFirst集：");
-                    System.out.print(product.first);
-                    System.out.print("\tFollow集：");
-                    System.out.print(product.follow);
-                    System.out.println();
-                }
+                ProductSetToCFG.showCFG(cfg2);
             } else if (EliminateLeftRecursion.sError == EliminateLeftRecursion.UNABLE_TO_ELIMINATE_LEFT_RECURSION) {
                 System.out.println("存在无法消除的左递归，不符合LL(1)文法");
             } else if (EliminateLeftRecursion.sError == EliminateLeftRecursion.SYMBOL_OVERFLOW) {
