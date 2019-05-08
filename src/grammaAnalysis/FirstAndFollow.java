@@ -110,15 +110,13 @@ public class FirstAndFollow {
                 ArrayList<String> rights = product.rights;
                 for (String right : rights) {
                     //遍历执行规则三
-                    getFollowRuleThree(productSet, terminatorSet, nonTerminatorSet, symbolOfIndex, right, product);
+                    getFollowRuleThree(productSet, nonTerminatorSet, symbolOfIndex, right, product);
                 }
             }
             //计算执行一次规则三后当前总的Follow集的大小
-            for (int index = 0; index < productSet.size(); index++) {
-                //获取产生式
-                product = productSet.get(index);
-                if (product.follow != null) {
-                    nowFollowSize += product.follow.size();
+            for (ProductSetToCFG.Product productItem : productSet) {
+                if (productItem.follow != null) {
+                    nowFollowSize += productItem.follow.size();
                 }
             }
             //当执行一次过后Follow集增大则需要再次执行
@@ -177,8 +175,7 @@ public class FirstAndFollow {
                     nextProductIndex = symbolOfIndex.get(nextSymbol);
                     nextProduct = productSet.get(nextProductIndex);
                     //将下一个非终结符的First集去掉ε加给当前字符的Follow集
-                    nextProductFirst = new HashSet<>();
-                    nextProductFirst.addAll(nextProduct.first);
+                    nextProductFirst = new HashSet<>(nextProduct.first);
                     nextProductFirst.remove('ε');
                     currentProduct.follow.addAll(nextProductFirst);
                 }
@@ -190,13 +187,12 @@ public class FirstAndFollow {
      * 执行规则三如果S->αB那么将Follow(S)加入到Follow(B),且如果First(B)中含有ε，则将Follow(S)加入到B之前一位的非终结符（如果是终结符无Follow集不需要加）
      *
      * @param productSet       产生式集合
-     * @param terminatorSet    终结符
      * @param nonTerminatorSet 非终极符
      * @param symbolOfIndex    产生式左侧与对于产生式集合下标的映射
      * @param right            产生式右侧的一项
      * @param product          当前正在处理的产生式
      */
-    private static void getFollowRuleThree(ArrayList<ProductSetToCFG.Product> productSet, HashSet<Character> terminatorSet, HashSet<Character> nonTerminatorSet, HashMap<Character, Integer> symbolOfIndex, String right, ProductSetToCFG.Product product) {
+    private static void getFollowRuleThree(ArrayList<ProductSetToCFG.Product> productSet, HashSet<Character> nonTerminatorSet, HashMap<Character, Integer> symbolOfIndex, String right, ProductSetToCFG.Product product) {
         //当前字符
         char currentSymbol;
         //右侧单个式子的长度
@@ -224,7 +220,7 @@ public class FirstAndFollow {
                 //如果First(B)中含有ε，则将Follow(S)加入到B之前一位的非终结符（如果是终结符无Follow集不需要加）
                 if (currentProduct.first.contains('ε')) {
                     if (rightLength > 1) {
-                        getFollowRuleThree(productSet, terminatorSet, nonTerminatorSet, symbolOfIndex, right.substring(0, rightLength - 1), product);
+                        getFollowRuleThree(productSet, nonTerminatorSet, symbolOfIndex, right.substring(0, rightLength - 1), product);
                     }
                 }
             }
