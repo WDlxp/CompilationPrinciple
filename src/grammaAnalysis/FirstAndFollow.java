@@ -12,6 +12,7 @@ import java.util.HashSet;
  */
 public class FirstAndFollow {
     public static void main(String[] args) {
+        //测试用例1
         String product1 = "EE+T|T";
         String product2 = "TT*F|F";
         String product3 = "Fi|(E)";
@@ -26,7 +27,7 @@ public class FirstAndFollow {
             ProductSetToCFG.CFG cfg1 = EliminateLeftRecursion.eliminateLeftRecursion(cfg);
             if (EliminateLeftRecursion.sError == 0) {
                 ProductSetToCFG.showCFG(cfg1);
-                ProductSetToCFG.CFG cfg2 = FirstAndFollow.firstAndFollow(cfg1);
+                ProductSetToCFG.CFG cfg2 = FirstAndFollow.getFirstAndFollow(cfg1);
                 ArrayList<ProductSetToCFG.Product> productSet1 = cfg2.productSet;
                 for (ProductSetToCFG.Product product : productSet1) {
                     System.out.print("\nFirst集：");
@@ -56,7 +57,7 @@ public class FirstAndFollow {
      * @param cfg 输入CFG
      * @return 返回含有First集和Follow集的产生式
      */
-    public static ProductSetToCFG.CFG firstAndFollow(ProductSetToCFG.CFG cfg) {
+    public static ProductSetToCFG.CFG getFirstAndFollow(ProductSetToCFG.CFG cfg) {
         //获取非终结符集合
         HashSet<Character> nonTerminatorSet = cfg.nonTerminatorSet;
         //获取终结符集合
@@ -64,7 +65,7 @@ public class FirstAndFollow {
         //获取产生式集合
         ArrayList<ProductSetToCFG.Product> productSet = cfg.productSet;
         //做一个产生式左左侧和下标的映射
-        HashMap<Character, Integer> symbolOfIndex = new HashMap<>();
+        HashMap<Character, Integer> symbolOfIndex = new HashMap<>(productSet.size());
         for (int i = 0; i < productSet.size(); i++) {
             symbolOfIndex.put(productSet.get(i).left, i);
         }

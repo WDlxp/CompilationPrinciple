@@ -1,7 +1,6 @@
 package grammaAnalysis;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
 /**
  * @author wdl
@@ -24,7 +23,7 @@ public class TestMain {
             ProductSetToCFG.CFG cfg1=EliminateLeftRecursion.eliminateLeftRecursion(cfg);
             if (EliminateLeftRecursion.sError==0){
                 ProductSetToCFG.showCFG(cfg1);
-                ProductSetToCFG.CFG cfg2=FirstAndFollow.firstAndFollow(cfg1);
+                ProductSetToCFG.CFG cfg2=FirstAndFollow.getFirstAndFollow(cfg1);
                 ArrayList<ProductSetToCFG.Product> productSet1=cfg2.productSet;
                 for (ProductSetToCFG.Product product:productSet1){
                     System.out.println(product.first);
