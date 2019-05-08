@@ -2,6 +2,7 @@ package lexicalAnalysis;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 
 /**
@@ -232,6 +233,7 @@ class LexicalAnalysisSecondMethod {
             add("[");
             add("]");
             add(",");
+            add("\"");
         }};
     }
 
@@ -340,25 +342,26 @@ class LexicalAnalysisSecondMethod {
      * @return 返回是否合法
      */
     private static boolean legitimacy(int[][] miniDFA, String input, char[] characters) {
+        HashMap<Character, Integer> charAndIndexMap = new HashMap<>(characters.length);
+        for (int index = 0; index < characters.length; index++) {
+            charAndIndexMap.put(characters[index], index);
+        }
+        //当前所在状态
         int current = 0;
+        //字符在字符集中的下标
+        int index;
         for (int j = 0; j < input.length(); j++) {
-            //字符是否存在的标志
-            boolean isHave = false;
             char op = input.charAt(j);
-            for (int index = 0; index < characters.length; index++) {
-                if (characters[index] == op) {
-                    isHave = true;
-                    if (miniDFA[current][index] == -1) {
-                        return false;
-                    } else {
-                        current = miniDFA[current][index];
-                        break;
-                    }
-                }
-            }
-            //如果符号不存在直接返回false
-            if (!isHave) {
+            //如果获取不到值则说明该字符不在字符集中直接返回错误
+            if (charAndIndexMap.get(op) == null) {
                 return false;
+            } else {
+                index = charAndIndexMap.get(op);
+                if (miniDFA[current][index] == -1) {
+                    return false;
+                } else {
+                    current = miniDFA[current][index];
+                }
             }
         }
         return miniDFA[current][characters.length] == 1;
