@@ -11,8 +11,6 @@ import java.util.HashSet;
  * @author wdl
  */
 public class FirstAndFollow {
-
-
     public static void main(String[] args) {
         String product1 = "EE+T|T";
         String product2 = "TT*F|F";
@@ -85,7 +83,6 @@ public class FirstAndFollow {
         product.follow.add('#');
         //遍历执行
         // 规则二：若有S->αBβ则将First(B)去除ε加入到Follow(S)中；
-        // 规则三如果S->αB那么将Follow(S)加入到Follow(B),且如果First(B)中含有ε，则将Follow(S)加入到B之前一位的非终结符（如果是终结符无Follow集不需要加）
         for (int index = 0; index < productSet.size(); index++) {
             //获取产生式
             product = productSet.get(index);
@@ -96,16 +93,35 @@ public class FirstAndFollow {
                 getFollowRuleTwo(productSet, terminatorSet, nonTerminatorSet, symbolOfIndex, right);
             }
         }
-        for (int index = 0; index < productSet.size(); index++) {
-            //获取产生式
-            product = productSet.get(index);
-            //获取产生式右侧
-            ArrayList<String> rights = product.rights;
-            for (String right : rights) {
-                //遍历执行规则三
-                getFollowRuleThree(productSet, terminatorSet, nonTerminatorSet, symbolOfIndex, right, product);
+
+        int preFollowSize;
+        int nowFollowSize = 0;
+        do {
+            //将前一次总的Follow集的大小赋值给
+            preFollowSize = nowFollowSize;
+            //初始化这一次总的Follow集的大小
+            nowFollowSize = 0;
+            // 规则三如果S->αB那么将Follow(S)加入到Follow(B),且如果First(B)中含有ε，则将Follow(S)加入到B之前一位的非终结符（如果是终结符无Follow集不需要加）
+            for (int index = 0; index < productSet.size(); index++) {
+                //获取产生式
+                product = productSet.get(index);
+                //获取产生式右侧
+                ArrayList<String> rights = product.rights;
+                for (String right : rights) {
+                    //遍历执行规则三
+                    getFollowRuleThree(productSet, terminatorSet, nonTerminatorSet, symbolOfIndex, right, product);
+                }
             }
-        }
+            //计算执行一次规则三后当前总的Follow集的大小
+            for (int index = 0; index < productSet.size(); index++) {
+                //获取产生式
+                product = productSet.get(index);
+                if (product.follow != null) {
+                    nowFollowSize += product.follow.size();
+                }
+            }
+            //当执行一次过后Follow集增大则需要再次执行
+        } while (nowFollowSize > preFollowSize);
         return cfg;
     }
 
