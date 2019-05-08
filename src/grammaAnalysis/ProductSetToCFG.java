@@ -146,11 +146,11 @@ public class ProductSetToCFG {
             }
             System.out.print(rights.get(rights.size() - 1));
             if (product.first != null) {
-                System.out.print("\t\tFirst集：");
+                System.out.printf("%15s","First集：");
                 System.out.print(product.first);
             }
             if (product.follow != null) {
-                System.out.print("\tFollow集：");
+                System.out.printf("%10s","Follow集：");
                 System.out.print(product.follow);
             }
             System.out.println();
