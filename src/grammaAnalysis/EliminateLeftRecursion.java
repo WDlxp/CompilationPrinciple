@@ -12,6 +12,24 @@ import java.util.HashSet;
  */
 public class EliminateLeftRecursion {
     public static void main(String[] args) {
+        //测试用例1
+        String product1 = "SAa|b";
+        String product2 = "AAc|Sd|ε";
+//        String product3 = "Cε";
+        ArrayList<String> productSet = new ArrayList<>();
+        productSet.add(product1);
+        productSet.add(product2);
+//        productSet.add(product3);
+        //初始
+        ProductSetToCFG.CFG cfg = ProductSetToCFG.pToCFG(productSet);
+        ProductSetToCFG.showCFG(cfg);
+        //隐式转显式
+        ProductSetToCFG.CFG cfg1 = implicitToExplicit(cfg);
+        ProductSetToCFG.showCFG(cfg1);
+        //去除显式
+        ProductSetToCFG.CFG cfg2 = eliminateLeftRecursion(cfg);
+        ProductSetToCFG.showCFG(cfg2);
+
     }
 
     /**
@@ -78,7 +96,10 @@ public class EliminateLeftRecursion {
                     //标记为1说明是存在递归的项
                     if (flags[flagIndex]==1){
                         newProductRights.add(rights.get(flagIndex).substring(1)+newProductStart);
-                    }else {
+                    }else if ("ε".equals(rights.get(flagIndex))){
+                        //TODO(1)增加对右侧某项为空的处理
+                        oldProductRights.add(String.valueOf(newProductStart));
+                    } else {
                         oldProductRights.add(rights.get(flagIndex)+newProductStart);
                     }
                 }
@@ -95,18 +116,49 @@ public class EliminateLeftRecursion {
         return new ProductSetToCFG.CFG(terminatorSet,nonTerminatorSet,cfg.start,newProductSet);
     }
 
+
     /**
      * 隐式左递归转显式左递归
      * @param cfg 输入CFG
      * @return 返回装换隐式左递归完成的CFG
      */
     public static ProductSetToCFG.CFG implicitToExplicit(ProductSetToCFG.CFG cfg){
-        return null;
+
+        for (int i = 1;i<cfg.nonTerminatorSet.size();i++){
+            for (int j = 0;j < i;j++){
+                for (int k = 0;k<cfg.productSet.get(i).rights.size();k++){
+                    if (cfg.productSet.get(i).rights.get(k).charAt(0) == cfg.productSet.get(j).left){
+                        /*
+                          用Aj->δ1|δ2|...|δk的右部替换每个形如Ai->Ajγ产生式中的Aj
+                          得到新产生式Ai->δ1γ|δ2γ|...|δkγ
+                         */
+                        //remainder:右侧每项中的γ
+                        String remainder = cfg.productSet.get(i).rights.get(k).substring(1);
+                        String mid = "";
+                        boolean is_first = true;
+                        //替换过程
+                        for (int num = 0;num < cfg.productSet.get(j).rights.size();num++){
+                            String del = cfg.productSet.get(j).rights.get(num);
+                            String replace = del + remainder;
+                            if (is_first) {
+                                cfg.productSet.get(i).rights.set(k, replace);
+                                is_first = false;
+                            }else {
+                                cfg.productSet.get(i).rights.add(replace);
+                            }
+                            mid = cfg.productSet.get(i).rights.get(k);
+                        }
+                    }
+                }
+            }
+        }
+        return cfg;
+
     }
     /**
      * 获取新的不重复字符的方法
      */
-    private static class NewChar {
+    public static class NewChar {
         /**
          * 用于标记字符是否已经使用过0未使用，1已经使用
          */

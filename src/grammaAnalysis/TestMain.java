@@ -23,11 +23,12 @@ public class TestMain {
             ProductSetToCFG.CFG cfg1=EliminateLeftRecursion.eliminateLeftRecursion(cfg);
             if (EliminateLeftRecursion.sError==0){
                 ProductSetToCFG.showCFG(cfg1);
-                ProductSetToCFG.CFG cfg2=FirstAndFollow.getFirstAndFollow(cfg1);
-                ArrayList<ProductSetToCFG.Product> productSet1=cfg2.productSet;
-                for (ProductSetToCFG.Product product:productSet1){
-                    System.out.println(product.first);
-                }
+
+                ProductSetToCFG.CFG cfg2=ExtractLeftFactor.extractLeftFactor(cfg1);
+                ProductSetToCFG.showCFG(cfg2);
+
+                ProductSetToCFG.CFG cfg3=FirstAndFollow.getFirstAndFollow(cfg1);
+                ProductSetToCFG.showCFG(cfg3);
             } else if (EliminateLeftRecursion.sError==EliminateLeftRecursion.UNABLE_TO_ELIMINATE_LEFT_RECURSION){
                 System.out.println("存在无法消除的左递归，不符合LL(1)文法");
             }else if (EliminateLeftRecursion.sError==EliminateLeftRecursion.SYMBOL_OVERFLOW){
