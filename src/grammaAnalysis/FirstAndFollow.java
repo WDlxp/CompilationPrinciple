@@ -116,9 +116,12 @@ public class FirstAndFollow {
             }
             //计算执行一次规则三后当前总的Follow集的大小
             for (ProductSetToCFG.Product productItem : productSet) {
+                //如果First集中含有空
                 if (productItem.first.contains('ε')){
+                    //求First集和Follow集的交集
                     HashSet<Character> intersectionSet=new HashSet<>(productItem.first);
                     intersectionSet.retainAll(productItem.follow);
+                    //如果交集不为空则返回错误
                     if (intersectionSet.size()!=0){
                         sError=INTERSECTION_OF_FIRST_AND_FOLLOW_IS_NOT_NULL;
                         return null;
