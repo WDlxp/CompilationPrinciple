@@ -2,6 +2,8 @@ package grammaAnalysis;
 
 import java.util.ArrayList;
 
+
+
 /**
  * @author wdl
  */
@@ -20,15 +22,19 @@ public class TestMain {
 //        cfg=pToCFG(null);
         if (ProductSetToCFG.sError == 0) {
             ProductSetToCFG.showCFG(cfg);
-            ProductSetToCFG.CFG cfg1=EliminateLeftRecursion.eliminateLeftRecursion(cfg);
+            ProductSetToCFG.CFG cfg1=EliminateLeftRecursion.eliminateExplicitLeftRecursion(cfg);
             if (EliminateLeftRecursion.sError==0){
                 ProductSetToCFG.showCFG(cfg1);
 
                 ProductSetToCFG.CFG cfg2=ExtractLeftFactor.extractLeftFactor(cfg1);
                 ProductSetToCFG.showCFG(cfg2);
 
-                ProductSetToCFG.CFG cfg3=FirstAndFollow.getFirstAndFollow(cfg1);
-                ProductSetToCFG.showCFG(cfg3);
+                ProductSetToCFG.CFG cfg3 = FirstAndFollow.getFirstAndFollow(cfg1);
+                if (FirstAndFollow.sError==0){
+                    ProductSetToCFG.showCFG(cfg3);
+                }else if (FirstAndFollow.sError==FirstAndFollow.INTERSECTION_OF_FIRST_AND_FOLLOW_IS_NOT_NULL){
+                    System.out.println("First集含空时与Follow集存在存在交集，不符合LL(1)文法");
+                }
             } else if (EliminateLeftRecursion.sError==EliminateLeftRecursion.UNABLE_TO_ELIMINATE_LEFT_RECURSION){
                 System.out.println("存在无法消除的左递归，不符合LL(1)文法");
             }else if (EliminateLeftRecursion.sError==EliminateLeftRecursion.SYMBOL_OVERFLOW){

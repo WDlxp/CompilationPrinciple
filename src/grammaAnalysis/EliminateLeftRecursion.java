@@ -12,24 +12,34 @@ import java.util.HashSet;
  */
 public class EliminateLeftRecursion {
     public static void main(String[] args) {
-        //测试用例1
-        String product1 = "SAa|b";
-        String product2 = "AAc|Sd|ε";
-//        String product3 = "Cε";
+//测试用例1
+        String product1 = "Aab|Ac";
+        String product2 = "BAb|bc|Ac|bC";
+        String product3 = "Cab|bA|bd";
+        String product4 = "Cab|df";
         ArrayList<String> productSet = new ArrayList<>();
         productSet.add(product1);
         productSet.add(product2);
-//        productSet.add(product3);
+        productSet.add(product3);
+        productSet.add(product4);
         //初始
         ProductSetToCFG.CFG cfg = ProductSetToCFG.pToCFG(productSet);
         ProductSetToCFG.showCFG(cfg);
-        //隐式转显式
+
+        //去除左递归
         ProductSetToCFG.CFG cfg1 = implicitToExplicit(cfg);
         ProductSetToCFG.showCFG(cfg1);
-        //去除显式
-        ProductSetToCFG.CFG cfg2 = eliminateLeftRecursion(cfg);
-        ProductSetToCFG.showCFG(cfg2);
 
+    }
+
+    /**
+     * 消除左递归
+     * @param cfg 输入CFG
+     * @return 返回CFG
+     */
+    public static ProductSetToCFG.CFG eliminateLeftRecursion(ProductSetToCFG.CFG cfg) {
+        //先调用隐式左递归转显式左递归再调用显式左递归消除左递归
+        return eliminateExplicitLeftRecursion(implicitToExplicit(cfg));
     }
 
     /**
@@ -44,7 +54,7 @@ public class EliminateLeftRecursion {
      * @param cfg 输入CFG
      * @return 返回消除左递归后新的CFG
      */
-    public static ProductSetToCFG.CFG eliminateLeftRecursion(ProductSetToCFG.CFG cfg) {
+    public static ProductSetToCFG.CFG eliminateExplicitLeftRecursion(ProductSetToCFG.CFG cfg) {
         sError=0;
         //获取非终结符集合
         HashSet<Character> nonTerminatorSet = cfg.nonTerminatorSet;
@@ -123,35 +133,40 @@ public class EliminateLeftRecursion {
      * @return 返回装换隐式左递归完成的CFG
      */
     public static ProductSetToCFG.CFG implicitToExplicit(ProductSetToCFG.CFG cfg){
-
-        for (int i = 1;i<cfg.nonTerminatorSet.size();i++){
+        ArrayList<String> rights;
+        int rightsSize;
+        boolean sFirst;
+        for (int i = 0;i<cfg.nonTerminatorSet.size();i++){
+            rights=cfg.productSet.get(i).rights;
             for (int j = 0;j < i;j++){
-                for (int k = 0;k<cfg.productSet.get(i).rights.size();k++){
-                    if (cfg.productSet.get(i).rights.get(k).charAt(0) == cfg.productSet.get(j).left){
+                rightsSize=rights.size();
+                for (int k = 0;k<rightsSize;k++){
+                    if (rights.get(k).charAt(0) == cfg.productSet.get(j).left){
                         /*
                           用Aj->δ1|δ2|...|δk的右部替换每个形如Ai->Ajγ产生式中的Aj
                           得到新产生式Ai->δ1γ|δ2γ|...|δkγ
                          */
                         //remainder:右侧每项中的γ
-                        String remainder = cfg.productSet.get(i).rights.get(k).substring(1);
-                        String mid = "";
-                        boolean is_first = true;
+                        String remainder = rights.get(k).substring(1);
+                         sFirst= true;
                         //替换过程
                         for (int num = 0;num < cfg.productSet.get(j).rights.size();num++){
                             String del = cfg.productSet.get(j).rights.get(num);
                             String replace = del + remainder;
-                            if (is_first) {
-                                cfg.productSet.get(i).rights.set(k, replace);
-                                is_first = false;
+                            if (sFirst) {
+                                rights.set(k, replace);
+                                sFirst = false;
                             }else {
-                                cfg.productSet.get(i).rights.add(replace);
+                                rights.add(replace);
                             }
-                            mid = cfg.productSet.get(i).rights.get(k);
                         }
                     }
                 }
+                System.out.println("第三层循环");
             }
+            System.out.println("第二层循环");
         }
+        System.out.println("第一层循环");
         return cfg;
 
     }
