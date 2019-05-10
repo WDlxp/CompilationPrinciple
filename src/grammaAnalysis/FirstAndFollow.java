@@ -30,7 +30,12 @@ public class FirstAndFollow {
             if (EliminateLeftRecursion.sError == 0) {
                 ProductSetToCFG.showCFG(cfg1);
                 ProductSetToCFG.CFG cfg2 = FirstAndFollow.getFirstAndFollow(cfg1);
-                ProductSetToCFG.showCFG(cfg2);
+                if (sError==0){
+                    ProductSetToCFG.showCFG(cfg2);
+                }else if (sError==INTERSECTION_OF_FIRST_AND_FOLLOW_IS_NOT_NULL){
+                    System.out.println("First集含空时与Follow集存在存在交集，不符合LL(1)文法");
+                }
+
             } else if (EliminateLeftRecursion.sError == EliminateLeftRecursion.UNABLE_TO_ELIMINATE_LEFT_RECURSION) {
                 System.out.println("存在无法消除的左递归，不符合LL(1)文法");
             } else if (EliminateLeftRecursion.sError == EliminateLeftRecursion.SYMBOL_OVERFLOW) {
@@ -45,7 +50,7 @@ public class FirstAndFollow {
      * 标记错误
      */
     static int sError = 0;
-
+    public static final int INTERSECTION_OF_FIRST_AND_FOLLOW_IS_NOT_NULL=1;
     /**
      * 求First集和Follow集
      *
@@ -53,6 +58,7 @@ public class FirstAndFollow {
      * @return 返回含有First集和Follow集的产生式
      */
     public static ProductSetToCFG.CFG getFirstAndFollow(ProductSetToCFG.CFG cfg) {
+        sError=0;
         //获取非终结符集合
         HashSet<Character> nonTerminatorSet = cfg.nonTerminatorSet;
         //获取终结符集合
@@ -110,6 +116,14 @@ public class FirstAndFollow {
             }
             //计算执行一次规则三后当前总的Follow集的大小
             for (ProductSetToCFG.Product productItem : productSet) {
+                if (productItem.first.contains('ε')){
+                    HashSet<Character> intersectionSet=new HashSet<>(productItem.first);
+                    intersectionSet.retainAll(productItem.follow);
+                    if (intersectionSet.size()!=0){
+                        sError=INTERSECTION_OF_FIRST_AND_FOLLOW_IS_NOT_NULL;
+                        return null;
+                    }
+                }
                 if (productItem.follow != null) {
                     nowFollowSize += productItem.follow.size();
                 }
