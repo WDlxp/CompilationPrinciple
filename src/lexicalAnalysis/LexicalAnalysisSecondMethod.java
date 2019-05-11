@@ -343,6 +343,7 @@ class LexicalAnalysisSecondMethod {
      */
     private static boolean legitimacy(int[][] miniDFA, String input, char[] characters) {
         HashMap<Character, Integer> charAndIndexMap = new HashMap<>(characters.length);
+        //做字符集与最小化DFA之间纵坐标的Map映射
         for (int index = 0; index < characters.length; index++) {
             charAndIndexMap.put(characters[index], index);
         }
@@ -356,14 +357,18 @@ class LexicalAnalysisSecondMethod {
             if (charAndIndexMap.get(op) == null) {
                 return false;
             } else {
+                //获取到达的下一个状态
                 index = charAndIndexMap.get(op);
+                //如果下一个状态为-1即代表空，无法到达下一个状态则返回错误
                 if (miniDFA[current][index] == -1) {
                     return false;
                 } else {
+                    //不为空则跳转到下一个状态
                     current = miniDFA[current][index];
                 }
             }
         }
+        //扫描完成后判断最后是否在终态上
         return miniDFA[current][characters.length] == 1;
     }
 

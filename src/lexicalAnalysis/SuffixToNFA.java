@@ -18,21 +18,21 @@ import java.util.*;
 public class SuffixToNFA {
     public static void main(String[] args) {
         String regularFormString = "(((a b|b )*(ab|c.d))*)*";
-        regularFormString="int ab";
-        regularFormString="a*(ab*(a";
+        regularFormString = "int ab";
+        regularFormString = "a*(ab*(a";
         StringBuilder result = new StringBuilder();
         System.out.println("正规式为：" + regularFormString);
 
         if (InfixToSuffix.change(regularFormString, result) == 0) {
             System.out.println("后缀表达式：" + result.toString());
             NFA nfa = changeSuffixToNfa(result.toString());
-           printNFA(nfa);
+            printNFA(nfa);
         } else {
             System.out.println("输入有误");
         }
     }
 
-    static void printNFA(NFA nfa){
+    static void printNFA(NFA nfa) {
         System.out.println("NFA为：");
         System.out.println("状态集：");
         for (int i : nfa.getStateList()) {
@@ -49,6 +49,7 @@ public class SuffixToNFA {
         System.out.println("\n起始状态:" + nfa.getStateList().get(nfa.getStartIndex()));
         System.out.println("结束状态:" + nfa.getStateList().get(nfa.getFinishIndex()));
     }
+
     /**
      * 记录边的三元组
      * 前一个状态preState
@@ -85,8 +86,8 @@ public class SuffixToNFA {
      * stateList:状态集
      * characterSet:字符集
      * moveList边的集合
-     * startIndex初态(下标)
-     * finishIndex终态(下标)
+     * startIndex初态
+     * finishIndex终态
      */
     static class NFA {
         private List<Integer> stateList;

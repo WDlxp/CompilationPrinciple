@@ -41,12 +41,10 @@ public class NFAToDFA {
      * NFA转DFA
      *
      * @param nfa   传入NFA
-     * @param print 是否打印过程
+     * @param isPrint 是否打印过程
      * @return 返回一个最小DFA的二维矩阵，横坐标对应字符集的顺序，最后列代表是否为终态1代表是0代表不是，同时第一行即状态0代表入口
      */
-    static int[][] changeNFAToDFA(SuffixToNFA.NFA nfa, boolean print) {
-        //是否打印过程
-        boolean isPrint = print;
+    static int[][] changeNFAToDFA(SuffixToNFA.NFA nfa, boolean isPrint) {
 
         List<Integer> stateList = nfa.getStateList();
         HashSet<Character> characterSet = nfa.getCharacterSet();

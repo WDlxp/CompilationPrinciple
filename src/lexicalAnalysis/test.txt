@@ -1,7 +1,6 @@
 int main(){
  int x=3.75;
  x+=5.7;
- int abc=3;
  float    y=x+abc;
  int[] array=new int[]{1,3,5,7};
  double $_z=abc%y;
@@ -12,11 +11,9 @@ int main(){
 
  }
 
-
     0x78F
  0XA27s88
  <<=
-
 
  >>>
  >>>>
