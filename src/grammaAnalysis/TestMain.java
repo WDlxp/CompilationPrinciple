@@ -30,13 +30,7 @@ public class TestMain {
                     ProductSetToCFG.showCFG(firstAndFollowCfgResult.getCfg());
                     PredictionTable.PreTableResult preTableResult = PredictionTable.predictionTable(firstAndFollowCfgResult.getCfg());
                     if (preTableResult.getsError() == 0) {
-                        System.out.println();
-                        for (String[] strings : preTableResult.getPreTable()) {
-                            for (String string : strings) {
-                                System.out.print(string + " ");
-                            }
-                            System.out.println();
-                        }
+                        PredictionTable.showPreTable(preTableResult.getPreTable(),preTableResult.getColSymbolSet(),preTableResult.getRowSymbolSet());
                     } else if (preTableResult.getsError() == PredictionTable.EXIST_IMPLICIT_LEFT_FACTOR) {
                         System.out.println("存在隐式左因子，不符合LL(1)文法");
                     }
