@@ -13,10 +13,10 @@ import java.util.HashSet;
 public class EliminateLeftRecursion {
     public static void main(String[] args) {
 //测试用例1
-        String product1 = "Aab|Ac";
+        String product1 = "ABb|Ac";
         String product2 = "BAb|bc|Ac|bC";
         String product3 = "Cab|bA|bd";
-        String product4 = "Cab|df";
+        String product4 = "Cac|df";
         ArrayList<String> productSet = new ArrayList<>();
         productSet.add(product1);
         productSet.add(product2);
@@ -27,7 +27,7 @@ public class EliminateLeftRecursion {
         ProductSetToCFG.showCFG(cfg);
 
         //去除左递归
-        ProductSetToCFG.CFG cfg1 = implicitToExplicit(cfg);
+        ProductSetToCFG.CFG cfg1 = eliminateLeftRecursion(cfg);
         ProductSetToCFG.showCFG(cfg1);
 
     }

@@ -12,7 +12,7 @@ public class TestMain {
         String product1 = "Aab|Ac";
         String product2 = "BAb|bc|Ac|bC";
         String product3 = "Cab|bA|bd";
-        String product4 = "Cab|df";
+        String product4 = "Cac|df";
         ArrayList<String> productSet = new ArrayList<>();
         productSet.add(product1);
         productSet.add(product2);
