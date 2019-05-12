@@ -39,6 +39,7 @@ public class EliminateLeftRecursion {
      * @return 返回CFG
      */
     public static ProductSetToCFG.CFGResult eliminateLeftRecursion(ProductSetToCFG.CFG cfg) {
+        eliminateExplicitLeftRecursion(cfg);
         //先调用隐式左递归转显式左递归再调用显式左递归消除左递归
         return eliminateExplicitLeftRecursion(implicitToExplicit(cfg));
     }
