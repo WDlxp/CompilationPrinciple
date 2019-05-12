@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import static grammaAnalysis.FirstAndFollow.INTERSECTION_OF_FIRST_AND_FOLLOW_IS_NOT_NULL;
-
 /**
  * 5.通过First集与Follow集生成对应的预测分析表
  *
