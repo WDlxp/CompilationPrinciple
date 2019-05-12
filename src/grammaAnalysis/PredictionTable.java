@@ -93,7 +93,7 @@ public class PredictionTable {
                         //如果当前表格不为空则说明前面已经有一个产生式到达这里，再次计算出一个相同的值说明存在隐式左递归
                         if (preTable[rowIndex][colIndex] != null) {
                             sError = EXIST_IMPLICIT_LEFT_FACTOR;
-                            return null;
+                            return new PreTableResult(preTable,terminatorSymbolMap,nonTerminatorSymbolMap,sError);
                         }
                         preTable[rowIndex][colIndex] = rights.get(index);
                     }
@@ -108,7 +108,7 @@ public class PredictionTable {
                     //如果当前表格不为空则说明前面已经有一个产生式到达这里，再次计算出一个相同的值说明存在隐式左递归
                     if (preTable[rowIndex][colIndex] != null) {
                         sError = EXIST_IMPLICIT_LEFT_FACTOR;
-                        return null;
+                        return new PreTableResult(preTable,terminatorSymbolMap,nonTerminatorSymbolMap,sError);
                     }
                     preTable[rowIndex][colIndex] = "ε";
                 }

@@ -70,7 +70,7 @@ public class ProductSetToCFG {
         sError = 0;
         if (productSet == null || productSet.size() == 0) {
             sError = P_IS_NULL;
-            return null;
+            return new CFGResult(null,sError);
         }
         //初始化
         HashSet<Character> terminatorSet = new HashSet<>();

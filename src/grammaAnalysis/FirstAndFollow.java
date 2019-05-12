@@ -93,7 +93,7 @@ public class FirstAndFollow {
                     //如果交集不为空则返回错误
                     if (intersectionSet.size() != 0) {
                         sError = INTERSECTION_OF_FIRST_AND_FOLLOW_IS_NOT_NULL;
-                        return null;
+                        return new ProductSetToCFG.CFGResult(null,sError);
                     }
                 }
                 if (productItem.follow != null) {
