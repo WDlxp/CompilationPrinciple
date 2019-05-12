@@ -14,55 +14,13 @@ import static grammaAnalysis.FirstAndFollow.INTERSECTION_OF_FIRST_AND_FOLLOW_IS_
  */
 public class PredictionTable {
     public static void main(String[] args) {
-        //测试用例1
-        String product1 = "S(L)|aA";
-        String product2 = "AS|ε";
-        String product3 = "LSB";
-        String product4 = "B,SB|ε";
-        ArrayList<String> productSet = new ArrayList<>();
-        productSet.add(product1);
-        productSet.add(product2);
-        productSet.add(product3);
-        productSet.add(product4);
-        ProductSetToCFG.CFG cfg = ProductSetToCFG.pToCFG(productSet);
-//        cfg=pToCFG(null);
-        if (ProductSetToCFG.sError == 0) {
-            ProductSetToCFG.showCFG(cfg);
-            ProductSetToCFG.CFG cfg1 = EliminateLeftRecursion.eliminateLeftRecursion(cfg);
-            if (EliminateLeftRecursion.sError == 0) {
-                ProductSetToCFG.showCFG(cfg1);
-                ProductSetToCFG.CFG cfg2 = FirstAndFollow.getFirstAndFollow(cfg1);
-                if (FirstAndFollow.sError == 0) {
-                    ProductSetToCFG.showCFG(cfg2);
-                    String[][] preTable=PredictionTable.predictionTable(cfg2);
-                    if (PredictionTable.sError==0){
-                        System.out.println();
-                        for (String[] strings:preTable){
-                            for (String string:strings){
-                                System.out.print(string+" ");
-                            }
-                            System.out.println();
-                        }
-                    }else if (PredictionTable.sError==PredictionTable.EXIST_IMPLICIT_LEFT_FACTOR){
-                        System.out.println("存在隐式左因子，不符合LL(1)文法");
-                    }
-                } else if (FirstAndFollow.sError == INTERSECTION_OF_FIRST_AND_FOLLOW_IS_NOT_NULL) {
-                    System.out.println("First集含空时与Follow集存在存在交集，不符合LL(1)文法");
-                }
 
-            } else if (EliminateLeftRecursion.sError == EliminateLeftRecursion.UNABLE_TO_ELIMINATE_LEFT_RECURSION) {
-                System.out.println("存在无法消除的左递归，不符合LL(1)文法");
-            } else if (EliminateLeftRecursion.sError == EliminateLeftRecursion.SYMBOL_OVERFLOW) {
-                System.out.println("超出可使用的字符集，无法处理");
-            }
-        } else if (ProductSetToCFG.sError == ProductSetToCFG.P_IS_NULL) {
-            System.out.println("产生式集合为空，请检查输入的产生式集合");
-        }
     }
+
     /**
      * 标记错误
      */
-    static int sError = 0;
+    private static int sError = 0;
     public static final int EXIST_IMPLICIT_LEFT_FACTOR = 1;
 
     /**
@@ -71,8 +29,8 @@ public class PredictionTable {
      * @param cfg 传入CFG
      * @return String[][]预测分析表
      */
-    public static String[][] predictionTable(ProductSetToCFG.CFG cfg) {
-
+    public static PreTableResult predictionTable(ProductSetToCFG.CFG cfg) {
+        sError = 0;
         //获取终结符
         HashSet<Character> terminatorSet = cfg.terminatorSet;
         //获取产生式集合
@@ -141,10 +99,10 @@ public class PredictionTable {
                     }
                 }
             }
-            leftFirst=productItem.first;
+            leftFirst = productItem.first;
             if (leftFirst.contains('ε')) {
-                follow=productItem.follow;
-                for (char ch:follow){
+                follow = productItem.follow;
+                for (char ch : follow) {
                     //获取到对应的列坐标
                     colIndex = terminatorSymbolMap.get(ch);
                     //如果当前表格不为空则说明前面已经有一个产生式到达这里，再次计算出一个相同的值说明存在隐式左递归
@@ -157,6 +115,47 @@ public class PredictionTable {
             }
 
         }
-        return preTable;
+        return new PreTableResult(preTable, terminatorSymbolMap, nonTerminatorSymbolMap, sError);
+    }
+
+    /**
+     * 预测分析表结果封装
+     */
+    static class PreTableResult {
+        private String[][] preTable;
+        private HashMap<Character, Integer> colSymbolMap;
+        private HashMap<Character, Integer> rowSymbolMap;
+        private int sError;
+
+        /**
+         * 预测分析表
+         *
+         * @param preTable     预测分析表
+         * @param colSymbolMap 列映射
+         * @param rowSymbolMap 行映射
+         * @param sError       错误指示码
+         */
+        public PreTableResult(String[][] preTable, HashMap<Character, Integer> colSymbolMap, HashMap<Character, Integer> rowSymbolMap, int sError) {
+            this.preTable = preTable;
+            this.colSymbolMap = colSymbolMap;
+            this.rowSymbolMap = rowSymbolMap;
+            this.sError = sError;
+        }
+
+        public String[][] getPreTable() {
+            return preTable;
+        }
+
+        public HashMap<Character, Integer> getColSymbolMap() {
+            return colSymbolMap;
+        }
+
+        public HashMap<Character, Integer> getRowSymbolMap() {
+            return rowSymbolMap;
+        }
+
+        public int getsError() {
+            return sError;
+        }
     }
 }

@@ -11,28 +11,34 @@ import java.util.Stack;
  */
 public class ExtractLeftFactor {
     public static void main(String[] args){
-        String product1 = "AabD";
-        String product2 = "DcD|ε";
-        String product3 = "BAb|bc|Ac|bC";
-        String product4 = "Cab|bA|bd|ab|df";
-//        A-->abD
-//        D-->cD|ε
-//        B-->Ab|bc|Ac|bC
-//        C-->ab|bA|bd|ab|df
-
-
-        ArrayList<String> productSet = new ArrayList<>();
-        productSet.add(product1);
-        productSet.add(product2);
-        productSet.add(product3);
-        productSet.add(product4);
-        ProductSetToCFG.CFG cfg=ProductSetToCFG.pToCFG(productSet);
-        ProductSetToCFG.showCFG(cfg);
-        ProductSetToCFG.CFG newCfg = ExtractLeftFactor.extractLeftFactor(cfg);
-        ProductSetToCFG.showCFG(newCfg);
+//        String product1 = "AabD";
+//        String product2 = "DcD|ε";
+//        String product3 = "BAb|bc|Ac|bC";
+//        String product4 = "Cab|bA|bd|ab|df";
+////        A-->abD
+////        D-->cD|ε
+////        B-->Ab|bc|Ac|bC
+////        C-->ab|bA|bd|ab|df
+//
+//
+//        ArrayList<String> productSet = new ArrayList<>();
+//        productSet.add(product1);
+//        productSet.add(product2);
+//        productSet.add(product3);
+//        productSet.add(product4);
+//        ProductSetToCFG.CFG cfg=ProductSetToCFG.pToCFG(productSet);
+//        ProductSetToCFG.showCFG(cfg);
+//        ProductSetToCFG.CFG newCfg = ExtractLeftFactor.extractLeftFactor(cfg);
+//        ProductSetToCFG.showCFG(newCfg);
     }
-    public static ProductSetToCFG.CFG extractLeftFactor(ProductSetToCFG.CFG cfg1){
+
+    /**
+     * 错误码
+     */
+    private static int sError = 0;
+    public static ProductSetToCFG.CFGResult extractLeftFactor(ProductSetToCFG.CFG cfg1){
         // ProductSetToCFG.CFG cfg1 = EliminateLeftRecursion.eliminateLeftRecursion(cfg);
+        sError=0;
         //获取非终结符集合
         HashSet<Character> nonTerminatorSet = cfg1.nonTerminatorSet;
         //获取终结符集合
@@ -66,7 +72,7 @@ public class ExtractLeftFactor {
             }
         }
         if (!flag1) {
-            return cfg1;
+            return new ProductSetToCFG.CFGResult(cfg1,sError);
         }else {
             for (ProductSetToCFG.Product product : productSet) {
                 productStack.push(product);
@@ -146,7 +152,7 @@ public class ExtractLeftFactor {
                 productSet.add(newProductSet1);
             }
         }
-
-        return new ProductSetToCFG.CFG(terminatorSet,nonTerminatorSet,cfg1.start,productSet);
+        ProductSetToCFG.CFG cfg=new ProductSetToCFG.CFG(terminatorSet,nonTerminatorSet,cfg1.start,productSet);
+        return new ProductSetToCFG.CFGResult(cfg,sError);
     }
 }

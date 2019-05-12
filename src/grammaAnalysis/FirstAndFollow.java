@@ -12,38 +12,6 @@ import java.util.HashSet;
  */
 public class FirstAndFollow {
     public static void main(String[] args) {
-        //测试用例1
-        String product1 = "S(L)|aA";
-        String product2 = "AS|ε";
-        String product3 = "LSB";
-        String product4 = "B,SB|ε";
-        ArrayList<String> productSet = new ArrayList<>();
-        productSet.add(product1);
-        productSet.add(product2);
-        productSet.add(product3);
-        productSet.add(product4);
-        ProductSetToCFG.CFG cfg = ProductSetToCFG.pToCFG(productSet);
-//        cfg=pToCFG(null);
-        if (ProductSetToCFG.sError == 0) {
-            ProductSetToCFG.showCFG(cfg);
-            ProductSetToCFG.CFG cfg1 = EliminateLeftRecursion.eliminateLeftRecursion(cfg);
-            if (EliminateLeftRecursion.sError == 0) {
-                ProductSetToCFG.showCFG(cfg1);
-                ProductSetToCFG.CFG cfg2 = FirstAndFollow.getFirstAndFollow(cfg1);
-                if (sError == 0) {
-                    ProductSetToCFG.showCFG(cfg2);
-                } else if (sError == INTERSECTION_OF_FIRST_AND_FOLLOW_IS_NOT_NULL) {
-                    System.out.println("First集含空时与Follow集存在存在交集，不符合LL(1)文法");
-                }
-
-            } else if (EliminateLeftRecursion.sError == EliminateLeftRecursion.UNABLE_TO_ELIMINATE_LEFT_RECURSION) {
-                System.out.println("存在无法消除的左递归，不符合LL(1)文法");
-            } else if (EliminateLeftRecursion.sError == EliminateLeftRecursion.SYMBOL_OVERFLOW) {
-                System.out.println("超出可使用的字符集，无法处理");
-            }
-        } else if (ProductSetToCFG.sError == ProductSetToCFG.P_IS_NULL) {
-            System.out.println("产生式集合为空，请检查输入的产生式集合");
-        }
     }
 
     /**
@@ -58,7 +26,7 @@ public class FirstAndFollow {
      * @param cfg 输入CFG
      * @return 返回含有First集和Follow集的产生式
      */
-    public static ProductSetToCFG.CFG getFirstAndFollow(ProductSetToCFG.CFG cfg) {
+    public static ProductSetToCFG.CFGResult getFirstAndFollow(ProductSetToCFG.CFG cfg) {
         sError = 0;
         //获取非终结符集合
         HashSet<Character> nonTerminatorSet = cfg.nonTerminatorSet;
@@ -134,7 +102,7 @@ public class FirstAndFollow {
             }
             //当执行一次过后Follow集增大则需要再次执行
         } while (nowFollowSize > preFollowSize);
-        return cfg;
+        return new ProductSetToCFG.CFGResult(cfg,sError);
     }
 
     /**

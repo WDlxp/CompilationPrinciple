@@ -55,19 +55,18 @@ public class ProductSetToCFG {
     /**
      * 通过全局的变量判断是否正确进行
      */
-    static int sError = 0;
+    private static int sError = 0;
     /**
      * 定义错误的类型的对应数字
      */
     public static final int P_IS_NULL = 1;
-
     /**
      * 将产生式集合P转化为CFG
      *
      * @param productSet 产生式集合
      * @return 返回CFG的集合
      */
-    public static CFG pToCFG(ArrayList<String> productSet) {
+    public static CFGResult pToCFG(ArrayList<String> productSet) {
         sError = 0;
         if (productSet == null || productSet.size() == 0) {
             sError = P_IS_NULL;
@@ -120,7 +119,8 @@ public class ProductSetToCFG {
                 newProductSet.add(new Product(product.charAt(0), rights));
             }
         }
-        return new CFG(terminatorSet, nonTerminatorSet, start, newProductSet);
+        CFG cfg=new CFG(terminatorSet, nonTerminatorSet, start, newProductSet);
+        return new CFGResult(cfg,sError);
     }
 
     /**
@@ -155,6 +155,32 @@ public class ProductSetToCFG {
                 System.out.print(product.follow);
             }
             System.out.println();
+        }
+    }
+
+    /**
+     * CFG结果封装
+     */
+    static class CFGResult{
+        private CFG cfg;
+        private int sError;
+
+        /**
+         * CFG结果封装
+         * @param cfg cfg
+         * @param sError 错误指示码
+         */
+        public CFGResult(CFG cfg, int sError) {
+            this.cfg = cfg;
+            this.sError = sError;
+        }
+
+        public CFG getCfg() {
+            return cfg;
+        }
+
+        public int getsError() {
+            return sError;
         }
     }
 }
