@@ -30,9 +30,9 @@ public class FirstAndFollow {
             if (EliminateLeftRecursion.sError == 0) {
                 ProductSetToCFG.showCFG(cfg1);
                 ProductSetToCFG.CFG cfg2 = FirstAndFollow.getFirstAndFollow(cfg1);
-                if (sError==0){
+                if (sError == 0) {
                     ProductSetToCFG.showCFG(cfg2);
-                }else if (sError==INTERSECTION_OF_FIRST_AND_FOLLOW_IS_NOT_NULL){
+                } else if (sError == INTERSECTION_OF_FIRST_AND_FOLLOW_IS_NOT_NULL) {
                     System.out.println("First集含空时与Follow集存在存在交集，不符合LL(1)文法");
                 }
 
@@ -50,7 +50,8 @@ public class FirstAndFollow {
      * 标记错误
      */
     static int sError = 0;
-    public static final int INTERSECTION_OF_FIRST_AND_FOLLOW_IS_NOT_NULL=1;
+    public static final int INTERSECTION_OF_FIRST_AND_FOLLOW_IS_NOT_NULL = 1;
+
     /**
      * 求First集和Follow集
      *
@@ -58,7 +59,7 @@ public class FirstAndFollow {
      * @return 返回含有First集和Follow集的产生式
      */
     public static ProductSetToCFG.CFG getFirstAndFollow(ProductSetToCFG.CFG cfg) {
-        sError=0;
+        sError = 0;
         //获取非终结符集合
         HashSet<Character> nonTerminatorSet = cfg.nonTerminatorSet;
         //获取终结符集合
@@ -117,13 +118,13 @@ public class FirstAndFollow {
             //计算执行一次规则三后当前总的Follow集的大小
             for (ProductSetToCFG.Product productItem : productSet) {
                 //如果First集中含有空
-                if (productItem.first.contains('ε')){
+                if (productItem.first.contains('ε')) {
                     //求First集和Follow集的交集
-                    HashSet<Character> intersectionSet=new HashSet<>(productItem.first);
+                    HashSet<Character> intersectionSet = new HashSet<>(productItem.first);
                     intersectionSet.retainAll(productItem.follow);
                     //如果交集不为空则返回错误
-                    if (intersectionSet.size()!=0){
-                        sError=INTERSECTION_OF_FIRST_AND_FOLLOW_IS_NOT_NULL;
+                    if (intersectionSet.size() != 0) {
+                        sError = INTERSECTION_OF_FIRST_AND_FOLLOW_IS_NOT_NULL;
                         return null;
                     }
                 }
@@ -256,8 +257,14 @@ public class FirstAndFollow {
         //获取这个产生式的右侧
         ArrayList<String> rights = productSet.get(index).rights;
         //遍历产生式右侧求每一项的First集，整合起来即为整个产生式的First集
+        HashSet<Character> rightItemFirst;
         for (String right : rights) {
-            first.addAll(getFirst(productSet, terminatorSet, symbolOfIndex, left, right));
+            rightItemFirst = getFirst(productSet, terminatorSet, symbolOfIndex, left, right);
+            if (productSet.get(index).rightFirsts == null) {
+                productSet.get(index).rightFirsts = new ArrayList<>();
+            }
+            productSet.get(index).rightFirsts.add(rightItemFirst);
+            first.addAll(rightItemFirst);
         }
         return first;
     }

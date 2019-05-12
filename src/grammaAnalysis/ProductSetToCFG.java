@@ -49,6 +49,7 @@ public class ProductSetToCFG {
 
         HashSet<Character> first = null;
         HashSet<Character> follow = null;
+        ArrayList<HashSet<Character>> rightFirsts=null;
     }
 
     /**
