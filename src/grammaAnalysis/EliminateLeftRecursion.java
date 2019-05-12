@@ -93,7 +93,7 @@ public class EliminateLeftRecursion {
                 //如果所有项目都存在左递归，则说明该左递归无法去除
                 if (leftRecursionNumber == rights.size()) {
                     sError = UNABLE_TO_ELIMINATE_LEFT_RECURSION;
-                    return null;
+                    return new ProductSetToCFG.CFGResult(null, sError);
                 }
                 //获取新的产生式字符
                 char newProductStart = NewChar.getNewChar(nonTerminatorSet);
@@ -167,11 +167,8 @@ public class EliminateLeftRecursion {
                         }
                     }
                 }
-                System.out.println("第三层循环");
             }
-            System.out.println("第二层循环");
         }
-        System.out.println("第一层循环");
         return cfg;
 
     }
