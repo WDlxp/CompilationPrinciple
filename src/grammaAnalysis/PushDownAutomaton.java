@@ -101,7 +101,8 @@ public class PushDownAutomaton {
 
     /**
      * 下推自动机
-     * @param input 需要判断的字符
+     *
+     * @param input          需要判断的字符
      * @param preTableResult 预测分析表封装结果
      * @return 返回是否符合
      */
@@ -124,35 +125,53 @@ public class PushDownAutomaton {
         symbolStack.push(rowSymbolSet.get(0));
         //初始化输入字符
         input = input + "#";
+        //记录扫描字符串的下标
         int inputIndex = 0;
 
+        //行列坐标
         int rowIndex;
         int colIndex;
 
+        //获取的中间结果
         String tempResult;
+        //获取中间结果的额长度
         int tempLength;
+        //符号栈不为空的情况下一直出栈
         while (!symbolStack.isEmpty()) {
             //从符号栈中pop出一个符号
             char ch = symbolStack.pop();
-            //如果行坐标中包含则说明是非终结符
+            //如果列坐标中包含则说明是终结符
             if (colSymbolSet.contains(ch)) {
-                //如果在输入字符未到#而字符栈到#则说明不匹配
                 if (ch == '#') {
+                    //如果在输入字符未到#而字符栈到#则说明不匹配否则匹配成功
                     return input.charAt(inputIndex) == '#';
-                } else {
+                }
+                //不为#则查看是否匹配
+                else {
+                    //如果匹配
                     if (ch == input.charAt(inputIndex)) {
+                        //字符往前移动一格，字符栈字符已经在前面出栈
                         inputIndex++;
                     }
                 }
-            } else {
+            }
+            //非终结符则寻找
+            else {
+                //判断当前扫描字符在不在列坐标字符中
                 if (colSymbolSet.contains(input.charAt(inputIndex))) {
+                    //获取行坐标
                     rowIndex = rowSymbolMap.get(ch);
+                    //获取列坐标
                     colIndex = colSymbolMap.get(input.charAt(inputIndex));
+                    //查表获取结果
                     tempResult = preTable[rowIndex][colIndex];
+                    //如果结果为空则说明不匹配
                     if (tempResult == null) {
                         return false;
-                    } else if (!tempResult.equals("ε")) {
-                        //倒序放入符号栈中
+                    }
+                    //如果结果不为空且不为ε（为ε不需要处理，直接下一轮因此）处理
+                    else if (!tempResult.equals("ε")) {
+                        //结果倒序压入符号栈中
                         tempLength = tempResult.length();
                         for (int i = tempLength - 1; i >= 0; i--) {
                             symbolStack.push(tempResult.charAt(i));
@@ -165,6 +184,7 @@ public class PushDownAutomaton {
                 }
             }
         }
+        //符号栈已经空，但是并未匹配到字符串的#则返回不匹配
         return false;
     }
 }
