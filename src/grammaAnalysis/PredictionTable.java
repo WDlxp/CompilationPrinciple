@@ -189,7 +189,7 @@ public class PredictionTable {
      * @param rowSymbolSet 行字符集
      */
     public static void showPreTable(String[][] preTable, HashSet<Character> colSymbolSet, HashSet<Character> rowSymbolSet) {
-        System.out.println();
+        System.out.println("-------------------------预测分析表----------------------------");
         for (char colSymbol : colSymbolSet) {
             System.out.printf("%10s", colSymbol);
         }
