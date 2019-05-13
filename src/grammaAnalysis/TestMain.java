@@ -18,6 +18,16 @@ public class TestMain {
         productSet.add(product2);
         productSet.add(product3);
         productSet.add(product4);
+//        测试用例2
+//        String product1 = "ABb|Ac";
+//        String product2 = "BAb|bc|Ac|bC";
+//        String product3 = "Cab|bA|bd";
+//        String product4 = "Dac|df";
+//        ArrayList<String> productSet = new ArrayList<>();
+//        productSet.add(product1);
+//        productSet.add(product2);
+//        productSet.add(product3);
+//        productSet.add(product4);
         ProductSetToCFG.CFGResult pToCfgResult = ProductSetToCFG.pToCFG(productSet);
 //        cfg=pToCFG(null);
         if (pToCfgResult.getsError() == 0) {
@@ -30,7 +40,7 @@ public class TestMain {
                     ProductSetToCFG.showCFG(firstAndFollowCfgResult.getCfg());
                     PredictionTable.PreTableResult preTableResult = PredictionTable.predictionTable(firstAndFollowCfgResult.getCfg());
                     if (preTableResult.getsError() == 0) {
-                        PredictionTable.showPreTable(preTableResult.getPreTable(),preTableResult.getColSymbolSet(),preTableResult.getRowSymbolSet());
+                        PredictionTable.showPreTable(preTableResult.getPreTable(), preTableResult.getColSymbolSet(), preTableResult.getRowSymbolSet());
                     } else if (preTableResult.getsError() == PredictionTable.EXIST_IMPLICIT_LEFT_FACTOR) {
                         System.out.println("存在隐式左因子，不符合LL(1)文法");
                     }

@@ -44,7 +44,7 @@ public class EliminateLeftRecursion {
             return new ProductSetToCFG.CFGResult(null, sError);
         }
         //先调用隐式左递归转显式左递归再调用显式左递归消除左递归
-        return eliminateExplicitLeftRecursion(implicitToExplicit(cfg));
+        return eliminateExplicitLeftRecursion(implicitToExplicit(tempCfgResult.getCfg()));
     }
 
     /**
