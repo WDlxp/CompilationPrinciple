@@ -36,7 +36,7 @@ public class PredictionTable {
         HashSet<Character> nonTerminatorSet = cfg.nonTerminatorSet;
         //获取产生式集合
         ArrayList<ProductSetToCFG.Product> productSet = cfg.productSet;
-        char startSymbol = productSet.get(0).left;
+        ArrayList<Character> rowSymbolSet=new ArrayList<>();
         //终结符去ε加上#与列坐标的Map映射
         terminatorSet.remove('ε');
         terminatorSet.add('#');
@@ -53,6 +53,7 @@ public class PredictionTable {
         ProductSetToCFG.Product product;
         for (int rowIndex = 0; rowIndex < rowLength; rowIndex++) {
             product = productSet.get(rowIndex);
+            rowSymbolSet.add(product.left);
             nonTerminatorSymbolMap.put(product.left, rowIndex);
         }
 
@@ -95,7 +96,7 @@ public class PredictionTable {
                         //如果当前表格不为空则说明前面已经有一个产生式到达这里，再次计算出一个相同的值说明存在隐式左递归
                         if (preTable[rowIndex][colIndex] != null) {
                             sError = EXIST_IMPLICIT_LEFT_FACTOR;
-                            return new PreTableResult(preTable, terminatorSymbolMap, nonTerminatorSymbolMap, terminatorSet, nonTerminatorSet, startSymbol, sError);
+                            return new PreTableResult(preTable, terminatorSymbolMap, nonTerminatorSymbolMap, terminatorSet, rowSymbolSet, sError);
                         }
                         preTable[rowIndex][colIndex] = rights.get(index);
                     }
@@ -110,14 +111,14 @@ public class PredictionTable {
                     //如果当前表格不为空则说明前面已经有一个产生式到达这里，再次计算出一个相同的值说明存在隐式左递归
                     if (preTable[rowIndex][colIndex] != null) {
                         sError = EXIST_IMPLICIT_LEFT_FACTOR;
-                        return new PreTableResult(preTable, terminatorSymbolMap, nonTerminatorSymbolMap, terminatorSet, nonTerminatorSet, startSymbol, sError);
+                        return new PreTableResult(preTable, terminatorSymbolMap, nonTerminatorSymbolMap, terminatorSet, rowSymbolSet, sError);
                     }
                     preTable[rowIndex][colIndex] = "ε";
                 }
             }
 
         }
-        return new PreTableResult(preTable, terminatorSymbolMap, nonTerminatorSymbolMap, terminatorSet, nonTerminatorSet, startSymbol, sError);
+        return new PreTableResult(preTable, terminatorSymbolMap, nonTerminatorSymbolMap, terminatorSet, rowSymbolSet, sError);
     }
 
     /**
@@ -128,8 +129,7 @@ public class PredictionTable {
         private HashMap<Character, Integer> colSymbolMap;
         private HashMap<Character, Integer> rowSymbolMap;
         private HashSet<Character> colSymbolSet;
-        private HashSet<Character> rowSymbolSet;
-        private char startSymbol;
+        private ArrayList<Character> rowSymbolSet;
         private int sError;
 
         /**
@@ -142,13 +142,12 @@ public class PredictionTable {
          * @param rowSymbolSet 行对应的字符集
          * @param sError       错误指示码
          */
-        public PreTableResult(String[][] preTable, HashMap<Character, Integer> colSymbolMap, HashMap<Character, Integer> rowSymbolMap, HashSet<Character> colSymbolSet, HashSet<Character> rowSymbolSet, char startSymbol, int sError) {
+        public PreTableResult(String[][] preTable, HashMap<Character, Integer> colSymbolMap, HashMap<Character, Integer> rowSymbolMap, HashSet<Character> colSymbolSet, ArrayList<Character> rowSymbolSet, int sError) {
             this.preTable = preTable;
             this.colSymbolMap = colSymbolMap;
             this.rowSymbolMap = rowSymbolMap;
             this.colSymbolSet = colSymbolSet;
             this.rowSymbolSet = rowSymbolSet;
-            this.startSymbol = startSymbol;
             this.sError = sError;
         }
 
@@ -172,12 +171,8 @@ public class PredictionTable {
             return colSymbolSet;
         }
 
-        public HashSet<Character> getRowSymbolSet() {
+        public ArrayList<Character> getRowSymbolSet() {
             return rowSymbolSet;
-        }
-
-        public char getStartSymbol() {
-            return startSymbol;
         }
     }
 
@@ -188,17 +183,15 @@ public class PredictionTable {
      * @param colSymbolSet 列字符集
      * @param rowSymbolSet 行字符集
      */
-    public static void showPreTable(String[][] preTable, HashSet<Character> colSymbolSet, HashSet<Character> rowSymbolSet) {
+    public static void showPreTable(String[][] preTable, HashSet<Character> colSymbolSet, ArrayList<Character> rowSymbolSet) {
         System.out.println("-------------------------预测分析表----------------------------");
         for (char colSymbol : colSymbolSet) {
             System.out.printf("%10s", colSymbol);
         }
         System.out.println();
-        Iterator<Character> itr = rowSymbolSet.iterator();
-        for (String[] strings : preTable) {
-            if (itr.hasNext()) {
-                System.out.print(itr.next());
-            }
+        for (int i = 0; i < preTable.length; i++) {
+            System.out.print(rowSymbolSet.get(i));
+            String[] strings = preTable[i];
             for (String string : strings) {
                 System.out.printf("%10s", string);
             }
