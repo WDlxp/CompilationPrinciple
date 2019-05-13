@@ -29,12 +29,14 @@ public class PredictionTable {
      */
     public static PreTableResult predictionTable(ProductSetToCFG.CFG cfg) {
         sError = 0;
+
         //获取终结符
         HashSet<Character> terminatorSet = cfg.terminatorSet;
         //获取非终结符
         HashSet<Character> nonTerminatorSet = cfg.nonTerminatorSet;
         //获取产生式集合
         ArrayList<ProductSetToCFG.Product> productSet = cfg.productSet;
+        char startSymbol = productSet.get(0).left;
         //终结符去ε加上#与列坐标的Map映射
         terminatorSet.remove('ε');
         terminatorSet.add('#');
@@ -93,7 +95,7 @@ public class PredictionTable {
                         //如果当前表格不为空则说明前面已经有一个产生式到达这里，再次计算出一个相同的值说明存在隐式左递归
                         if (preTable[rowIndex][colIndex] != null) {
                             sError = EXIST_IMPLICIT_LEFT_FACTOR;
-                            return new PreTableResult(preTable, terminatorSymbolMap, nonTerminatorSymbolMap, terminatorSet, nonTerminatorSet, sError);
+                            return new PreTableResult(preTable, terminatorSymbolMap, nonTerminatorSymbolMap, terminatorSet, nonTerminatorSet, startSymbol, sError);
                         }
                         preTable[rowIndex][colIndex] = rights.get(index);
                     }
@@ -108,14 +110,14 @@ public class PredictionTable {
                     //如果当前表格不为空则说明前面已经有一个产生式到达这里，再次计算出一个相同的值说明存在隐式左递归
                     if (preTable[rowIndex][colIndex] != null) {
                         sError = EXIST_IMPLICIT_LEFT_FACTOR;
-                        return new PreTableResult(preTable, terminatorSymbolMap, nonTerminatorSymbolMap, terminatorSet, nonTerminatorSet, sError);
+                        return new PreTableResult(preTable, terminatorSymbolMap, nonTerminatorSymbolMap, terminatorSet, nonTerminatorSet, startSymbol, sError);
                     }
                     preTable[rowIndex][colIndex] = "ε";
                 }
             }
 
         }
-        return new PreTableResult(preTable, terminatorSymbolMap, nonTerminatorSymbolMap, terminatorSet, nonTerminatorSet, sError);
+        return new PreTableResult(preTable, terminatorSymbolMap, nonTerminatorSymbolMap, terminatorSet, nonTerminatorSet, startSymbol, sError);
     }
 
     /**
@@ -127,6 +129,7 @@ public class PredictionTable {
         private HashMap<Character, Integer> rowSymbolMap;
         private HashSet<Character> colSymbolSet;
         private HashSet<Character> rowSymbolSet;
+        private char startSymbol;
         private int sError;
 
         /**
@@ -139,12 +142,13 @@ public class PredictionTable {
          * @param rowSymbolSet 行对应的字符集
          * @param sError       错误指示码
          */
-        public PreTableResult(String[][] preTable, HashMap<Character, Integer> colSymbolMap, HashMap<Character, Integer> rowSymbolMap, HashSet<Character> colSymbolSet, HashSet<Character> rowSymbolSet, int sError) {
+        public PreTableResult(String[][] preTable, HashMap<Character, Integer> colSymbolMap, HashMap<Character, Integer> rowSymbolMap, HashSet<Character> colSymbolSet, HashSet<Character> rowSymbolSet, char startSymbol, int sError) {
             this.preTable = preTable;
             this.colSymbolMap = colSymbolMap;
             this.rowSymbolMap = rowSymbolMap;
             this.colSymbolSet = colSymbolSet;
             this.rowSymbolSet = rowSymbolSet;
+            this.startSymbol = startSymbol;
             this.sError = sError;
         }
 
@@ -171,11 +175,16 @@ public class PredictionTable {
         public HashSet<Character> getRowSymbolSet() {
             return rowSymbolSet;
         }
+
+        public char getStartSymbol() {
+            return startSymbol;
+        }
     }
 
     /**
      * 打印预测分析表
-     * @param preTable 预测分析表
+     *
+     * @param preTable     预测分析表
      * @param colSymbolSet 列字符集
      * @param rowSymbolSet 行字符集
      */
