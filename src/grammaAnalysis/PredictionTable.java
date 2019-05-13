@@ -3,7 +3,6 @@ package grammaAnalysis;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 
 /**
  * 5.通过First集与Follow集生成对应的预测分析表

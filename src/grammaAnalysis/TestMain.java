@@ -41,6 +41,8 @@ public class TestMain {
                     PredictionTable.PreTableResult preTableResult = PredictionTable.predictionTable(firstAndFollowCfgResult.getCfg());
                     if (preTableResult.getsError() == 0) {
                         PredictionTable.showPreTable(preTableResult.getPreTable(), preTableResult.getColSymbolSet(), preTableResult.getRowSymbolSet());
+                        String input="a";
+                        System.out.println(PushDownAutomaton.predictiveAnalyzerSolution2(input,preTableResult));
                     } else if (preTableResult.getsError() == PredictionTable.EXIST_IMPLICIT_LEFT_FACTOR) {
                         System.out.println("存在隐式左因子，不符合LL(1)文法");
                     }
