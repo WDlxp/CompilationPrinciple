@@ -99,6 +99,12 @@ public class PushDownAutomaton {
 
     }
 
+    /**
+     * 下推自动机
+     * @param input 需要判断的字符
+     * @param preTableResult 预测分析表封装结果
+     * @return 返回是否符合
+     */
     public static Boolean predictiveAnalyzerSolution2(String input, PredictionTable.PreTableResult preTableResult) {
         //获取列字符集合
         HashSet<Character> colSymbolSet = preTableResult.getColSymbolSet();
