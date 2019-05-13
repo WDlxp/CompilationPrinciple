@@ -153,6 +153,10 @@ public class PushDownAutomaton {
                         //字符往前移动一格，字符栈字符已经在前面出栈
                         inputIndex++;
                     }
+                    //不匹配
+                    else {
+                        return false;
+                    }
                 }
             }
             //非终结符则寻找
