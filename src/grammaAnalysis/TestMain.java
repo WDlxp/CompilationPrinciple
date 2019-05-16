@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class TestMain {
     public static void main(String[] args) {
         //测试用例1
-        String product1 = "S(L)|aA|a";
+        String product1 = "S(L)|aA";
         String product2 = "AS|ε";
         String product3 = "LSB";
         String product4 = "B,SB|ε";
