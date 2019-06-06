@@ -1,4 +1,4 @@
-package grammaAnalysis;
+package grammaAnalysis.ll1;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ public class GrammarAnalysis {
     private static void getProductSetAndWords(ArrayList<String> productSet,ArrayList<String> words){
         try {
             //获取ProductSet产生式集合
-            File productSetFile = new File("src/grammaAnalysis/productSet");
+            File productSetFile = new File("src/grammaAnalysis/ll1/productSet");
             FileInputStream productSetInputStream = new FileInputStream(productSetFile);
             InputStreamReader productSetReader = new InputStreamReader(productSetInputStream, "UTF-8");
             BufferedReader productSetBufferedReader = new BufferedReader(productSetReader);
@@ -48,7 +48,7 @@ public class GrammarAnalysis {
             // 关闭输入流,释放系统资源
 
             //获取单词集合
-            File wordsFile = new File("src/grammaAnalysis/test");
+            File wordsFile = new File("src/grammaAnalysis/ll1/test");
             FileInputStream wordsInputStream = new FileInputStream(wordsFile);
             InputStreamReader wordsReader = new InputStreamReader(wordsInputStream, "UTF-8");
             BufferedReader wordsBufferedReader = new BufferedReader(wordsReader);

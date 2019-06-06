@@ -1,4 +1,4 @@
-package grammaAnalysis;
+package grammaAnalysis.ll1;
 
 import java.util.*;
 
