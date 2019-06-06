@@ -7,32 +7,22 @@ import java.util.ArrayList;
 /**
  * @author wdl
  */
-public class TestMain {
+public class GrammarAnalysis {
     public static void main(String[] args) {
-        //测试用例1
-//        String product1 = "S(L)|aA";
-//        String product2 = "AS|ε";
-//        String product3 = "LSB";
-//        String product4 = "B,SB|ε";
-//        ArrayList<String> productSet = new ArrayList<>();
-//        productSet.add(product1);
-//        productSet.add(product2);
-//        productSet.add(product3);
-//        productSet.add(product4);
-//        测试用例2
-//        String product1 = "ABb|Ac";
-//        String product2 = "BAb|bc|Ac|bC";
-//        String product3 = "Cab|bA|bd";
-//        String product4 = "Dac|df";
-//        ArrayList<String> productSet = new ArrayList<>();
-//        productSet.add(product1);
-//        productSet.add(product2);
-//        productSet.add(product3);
-//        productSet.add(product4);
-
-        //产生式的集合
         ArrayList<String> productSet = new ArrayList<>();
         ArrayList<String> words = new ArrayList<>();
+        //获取产生式集合和单词集合
+        getProductSetAndWords(productSet,words);
+        //进行语法分析
+        grammarAnalysis(productSet, words);
+
+    }
+    /**
+     * 获取产生式集合和待判断的单词集合
+     * @param productSet 产生式集合
+     * @param words 单词集合
+     */
+    private static void getProductSetAndWords(ArrayList<String> productSet,ArrayList<String> words){
         try {
             //获取ProductSet产生式集合
             File productSetFile = new File("src/grammaAnalysis/productSet");
@@ -46,6 +36,11 @@ public class TestMain {
                     productSet.add(productString);
                 }
             }
+            System.out.println("产生式集合：");
+            for (String product :
+                    productSet) {
+                System.out.println(product);
+            }
             productSetBufferedReader.close();
             productSetReader.close();
             // 关闭读取流
@@ -57,7 +52,6 @@ public class TestMain {
             FileInputStream wordsInputStream = new FileInputStream(wordsFile);
             InputStreamReader wordsReader = new InputStreamReader(wordsInputStream, "UTF-8");
             BufferedReader wordsBufferedReader = new BufferedReader(wordsReader);
-            StringBuilder stringBuilder = new StringBuilder();
             String wordsLineString;
             String[] tempWords;
             while ((wordsLineString = wordsBufferedReader.readLine()) != null) {
@@ -69,28 +63,14 @@ public class TestMain {
                     }
                 }
             }
-            System.out.println(words);
+//            System.out.println("待判断单词"+words);
             wordsInputStream.close();
             wordsReader.close();
             wordsBufferedReader.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        grammarAnalysis(productSet, words);
-
     }
-
-    private static String removeSpace(String product) {
-        StringBuilder stringBuilder = new StringBuilder();
-        char[] chars = product.toCharArray();
-        for (char ch : chars) {
-            if (ch != ' ') {
-                stringBuilder.append(ch);
-            }
-        }
-        return stringBuilder.toString();
-    }
-
     /**
      * 语法分析
      *
@@ -162,6 +142,21 @@ public class TestMain {
         } else if (pToCfgResult.getsError() == ProductSetToCFG.P_IS_NULL) {
             System.out.println("产生式集合为空，请检查输入的产生式集合");
         }
+    }
+    /**
+     * 去除空格
+     * @param product 产生式字符串
+     * @return 去除空格后的产生式
+     */
+    private static String removeSpace(String product) {
+        StringBuilder stringBuilder = new StringBuilder();
+        char[] chars = product.toCharArray();
+        for (char ch : chars) {
+            if (ch != ' ') {
+                stringBuilder.append(ch);
+            }
+        }
+        return stringBuilder.toString();
     }
 }
 
