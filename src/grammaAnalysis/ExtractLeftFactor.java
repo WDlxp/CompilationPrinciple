@@ -115,11 +115,13 @@ public class ExtractLeftFactor {
                             commonFactor = str2.charAt(0);
                             if (str2.substring(1).equals("")){
                                 newRights.add("ε");
+                                terminatorSet.add('ε');
                             }else if(!index[i]){
                                 newRights.add(str2.substring(1));
                             }
                             if (rights1.get(j).substring(1).equals("")){
                                 newRights.add("ε");
+                                terminatorSet.add('ε');
                             }else if (!index[j]){
                                 newRights.add(rights1.get(j).substring(1));
                             }
@@ -157,6 +159,7 @@ public class ExtractLeftFactor {
                 productSet.add(newProductSet1);
             }
         }
+
 
         ProductSetToCFG.CFG newCfg=new ProductSetToCFG.CFG(terminatorSet,nonTerminatorSet,cfg1.start,productSet);
         return new ProductSetToCFG.CFGResult(newCfg,sError);
