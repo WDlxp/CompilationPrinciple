@@ -7,10 +7,11 @@ import java.util.Stack;
 
 /**
  * 3.提取左因子
+ *
  * @author wdl
  */
 public class ExtractLeftFactor {
-    public static void main(String[] args){
+    public static void main(String[] args) {
 //        String product1 = "AabD";
 //        String product2 = "DcD|ε";
 //        String product3 = "BAb|bc|Ac|bC";
@@ -36,7 +37,7 @@ public class ExtractLeftFactor {
         productSet.add(product3);
         productSet.add(product4);
 
-        ProductSetToCFG.CFGResult cfgResult=ProductSetToCFG.pToCFG(productSet);
+        ProductSetToCFG.CFGResult cfgResult = ProductSetToCFG.pToCFG(productSet);
         ProductSetToCFG.showCFG(cfgResult.getCfg());
         ProductSetToCFG.CFGResult newCfgResult = ExtractLeftFactor.extractLeftFactor(cfgResult.getCfg());
         ProductSetToCFG.showCFG(newCfgResult.getCfg());
@@ -46,28 +47,29 @@ public class ExtractLeftFactor {
      * 错误码
      */
     private static int sError = 0;
-    public static ProductSetToCFG.CFGResult extractLeftFactor(ProductSetToCFG.CFG cfg1){
+
+    public static ProductSetToCFG.CFGResult extractLeftFactor(ProductSetToCFG.CFG cfg1) {
         // ProductSetToCFG.CFG cfg1 = EliminateLeftRecursion.eliminateLeftRecursion(cfg);
-        sError=0;
+        sError = 0;
         //获取非终结符集合
         HashSet<Character> nonTerminatorSet = cfg1.nonTerminatorSet;
         //获取终结符集合
-        HashSet<Character> terminatorSet=cfg1.terminatorSet;
+        HashSet<Character> terminatorSet = cfg1.terminatorSet;
         //标记已使用的字符
         EliminateLeftRecursion.NewChar.flagUsedChar(cfg1.nonTerminatorSet);
         //获取产生式集合
         ArrayList<ProductSetToCFG.Product> productSet = cfg1.productSet;
         //新的产生式集合
-        ArrayList<ProductSetToCFG.Product> newProductSet=new ArrayList<>();
+        ArrayList<ProductSetToCFG.Product> newProductSet = new ArrayList<>();
         //建一个放产生式的栈
         Stack<ProductSetToCFG.Product> productStack = new Stack<>();
         boolean flag1 = false;
         //检查是否存在左因子
         for (ProductSetToCFG.Product product : productSet) {
             ArrayList<String> rights2 = product.rights;
-            for (int i = 0; i < rights2.size(); i++){
+            for (int i = 0; i < rights2.size(); i++) {
                 char c = rights2.get(i).charAt(0);
-                for (int j = i+1; j < rights2.size();j++){
+                for (int j = i + 1; j < rights2.size(); j++) {
                     if (c == rights2.get(j).charAt(0)) {
                         flag1 = true;
                         break;
@@ -82,8 +84,8 @@ public class ExtractLeftFactor {
             }
         }
         if (!flag1) {
-            return new ProductSetToCFG.CFGResult(cfg1,sError);
-        }else {
+            return new ProductSetToCFG.CFGResult(cfg1, sError);
+        } else {
             for (ProductSetToCFG.Product product : productSet) {
                 productStack.push(product);
                 //newProductSet.add(product);
@@ -91,41 +93,41 @@ public class ExtractLeftFactor {
         }
         //System.out.println("--------");
         //将所有产生式放入栈中，依次提取
-        while (!productStack.empty()){
+        while (!productStack.empty()) {
             ProductSetToCFG.Product p = productStack.pop();
             ArrayList<String> rights1 = p.rights;
-            int i,j,n=rights1.size() ;
+            int i, j, n = rights1.size();
             boolean flag = false;
             char commonFactor = ' ';
             ArrayList<String> newRights = new ArrayList<String>();
-            boolean [] index = new boolean[n];
+            boolean[] index = new boolean[n];
             //遍历每个产生式右部的字符串
-            for (String singleString : rights1){
+            for (String singleString : rights1) {
                 i = rights1.indexOf(singleString);
                 String str2 = singleString;
-                if (i == n-1) {
+                if (i == n - 1) {
                     break;
                 }
-                if (!index[i]){
+                if (!index[i]) {
                     //int length = rights1.size();
-                    for (j = i+1;j <n ;j++){
+                    for (j = i + 1; j < n; j++) {
                         //判断是否存在左因子，比较每个字符第一个字符
-                        if (str2.charAt(0) == rights1.get(j).charAt(0)){
+                        if (str2.charAt(0) == rights1.get(j).charAt(0)) {
                             flag = true;
                             commonFactor = str2.charAt(0);
-                            if (str2.substring(1).equals("")){
+                            if (str2.substring(1).equals("")) {
                                 newRights.add("ε");
                                 terminatorSet.add('ε');
-                            }else if(!index[i]){
+                            } else if (!index[i]) {
                                 newRights.add(str2.substring(1));
                             }
-                            if (rights1.get(j).substring(1).equals("")){
+                            if (rights1.get(j).substring(1).equals("")) {
                                 newRights.add("ε");
                                 terminatorSet.add('ε');
-                            }else if (!index[j]){
+                            } else if (!index[j]) {
                                 newRights.add(rights1.get(j).substring(1));
                             }
-                            index[i] =index[j] = true;
+                            index[i] = index[j] = true;
                         }
                     }
                     //System.out.println("--------");
@@ -136,7 +138,7 @@ public class ExtractLeftFactor {
                 }
             }
             //移除原产生式中被提取左因子的字符串
-            for (int m = n-1; m >= 0; m--){
+            for (int m = n - 1; m >= 0; m--) {
                 if (index[m]) {
                     rights1.remove(m);
                 }
@@ -150,7 +152,13 @@ public class ExtractLeftFactor {
 
             //若存在左因子，将提取出的newRights和新生成的newProductStart组成新的产生式放入栈中
             if (commonFactor != ' ') {
+                //获取新的产生式字符
                 char newProductStart = EliminateLeftRecursion.NewChar.getNewChar(nonTerminatorSet);
+
+                if (newProductStart == ' ') {
+                    sError = EliminateLeftRecursion.SYMBOL_OVERFLOW;
+                    return new ProductSetToCFG.CFGResult(null, sError);
+                }
                 nonTerminatorSet.add(newProductStart);
                 String str = String.valueOf(commonFactor) + newProductStart;
                 rights1.add(str);
@@ -161,7 +169,7 @@ public class ExtractLeftFactor {
         }
 
 
-        ProductSetToCFG.CFG newCfg=new ProductSetToCFG.CFG(terminatorSet,nonTerminatorSet,cfg1.start,productSet);
-        return new ProductSetToCFG.CFGResult(newCfg,sError);
+        ProductSetToCFG.CFG newCfg = new ProductSetToCFG.CFG(terminatorSet, nonTerminatorSet, cfg1.start, productSet);
+        return new ProductSetToCFG.CFGResult(newCfg, sError);
     }
 }

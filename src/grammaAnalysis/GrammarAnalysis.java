@@ -133,6 +133,8 @@ public class GrammarAnalysis {
                     } else if (firstAndFollowCfgResult.getsError() == FirstAndFollow.INTERSECTION_OF_FIRST_AND_FOLLOW_IS_NOT_NULL) {
                         System.out.println("First集含空时与Follow集存在存在交集，不符合LL(1)文法");
                     }
+                }else if(extractLeftFactorCfgResult.getsError()==EliminateLeftRecursion.SYMBOL_OVERFLOW){
+                    System.out.println("超出可使用的字符集，无法处理");
                 }
             } else if (eliminateLeftRecursionCfgResult.getsError() == EliminateLeftRecursion.UNABLE_TO_ELIMINATE_LEFT_RECURSION) {
                 System.out.println("存在无法消除的左递归，不符合LL(1)文法");
