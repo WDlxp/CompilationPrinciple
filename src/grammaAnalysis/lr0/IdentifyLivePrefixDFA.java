@@ -56,8 +56,8 @@ public class IdentifyLivePrefixDFA {
             LrState lrState1 = stateStack.pop();
             ArrayList<LrProject> projects = new ArrayList<>(lrState1.coreItems);
             projects.addAll(lrState1.closureItems);
+            hasDo = new ArrayList<>();
             for (int i = 0; i < projects.size(); i++) {
-                hasDo = new ArrayList<>();
                 LrProject lrProject = projects.get(i);
                 if (!lrProject.isDotLast()) {
                     char ch = lrProject.dotPointerNext();
