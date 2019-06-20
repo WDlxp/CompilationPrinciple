@@ -34,12 +34,13 @@ public class LrState {
     }
 
     /**
-     * 比较两个状态的核是否相等，也就比较两个状态是否相等
+     * 比较核是否相等，也就比较两个状态是否相等
      *
      * @param coreItems 核
      * @return 是否相等
      */
     public boolean isEqual(ArrayList<LrProject> coreItems) {
+        //首先通过判断核中项目的个数是否相等如果个数都不相等那么肯定不相等
         if (this.coreItems.size() != coreItems.size()) {
             return false;
         }
