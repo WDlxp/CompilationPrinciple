@@ -13,6 +13,10 @@ class LrProject {
      */
     String rightSide;
     /**
+     * 辅助判断是否为原点.是否在最后一位
+     */
+    private int lastIndex;
+    /**
      * LR0项目的原点
      */
     int dotPointer;
@@ -21,6 +25,7 @@ class LrProject {
         this.leftSide = leftSide;
         this.rightSide = rightSide;
         this.dotPointer = dotPointer;
+        this.lastIndex = rightSide.length();
     }
 
     public LrProject(char leftSide, String rightSide) {
@@ -35,9 +40,10 @@ class LrProject {
 
     /**
      * 获取原点.后面的字符
+     *
      * @return 原点.后面的字符
      */
-    public Character dotPointerNext() {
+    Character dotPointerNext() {
         return rightSide.charAt(dotPointer);
     }
 
@@ -47,25 +53,21 @@ class LrProject {
      * @param lrProject 项目
      * @return 返回是否相等
      */
-    public boolean isEqual(LrProject lrProject) {
+    boolean isEqual(LrProject lrProject) {
         return (this.leftSide == lrProject.leftSide) && (this.rightSide.equals(lrProject.rightSide)) && (this.dotPointer == lrProject.dotPointer);
     }
 
     /**
      * 判断是否已经是规约项目
      */
-    public boolean isDotLast() {
-        //右侧为空的情况考虑
-        if (rightSide.equals("")) {
-            return true;
-        }
-        return dotPointer == rightSide.length();
+    boolean isDotLast() {
+        return dotPointer == lastIndex;
     }
 
     /**
      * 复制一个项目
      */
-    public LrProject lrProjectClone() {
+    LrProject lrProjectClone() {
         return new LrProject(leftSide, rightSide, dotPointer);
     }
 }
