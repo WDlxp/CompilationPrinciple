@@ -11,21 +11,23 @@ public class GrammarAnalysis {
     public static void main(String[] args) {
         ArrayList<String> productSet = new ArrayList<>();
         ArrayList<String> words = new ArrayList<>();
+        String path="src/grammaAnalysis/ll1/productSet";
         //获取产生式集合和单词集合
-        getProductSetAndWords(productSet,words);
+        getProductSetAndWords(path,productSet,words);
         //进行语法分析
         grammarAnalysis(productSet, words);
 
     }
     /**
      * 获取产生式集合和待判断的单词集合
+     * @param path 产生式输入文件路径
      * @param productSet 产生式集合
      * @param words 单词集合
      */
-    private static void getProductSetAndWords(ArrayList<String> productSet,ArrayList<String> words){
+    public static void getProductSetAndWords(String path,ArrayList<String> productSet,ArrayList<String> words){
         try {
             //获取ProductSet产生式集合
-            File productSetFile = new File("src/grammaAnalysis/ll1/productSet");
+            File productSetFile = new File(path);
             FileInputStream productSetInputStream = new FileInputStream(productSetFile);
             InputStreamReader productSetReader = new InputStreamReader(productSetInputStream, "UTF-8");
             BufferedReader productSetBufferedReader = new BufferedReader(productSetReader);
