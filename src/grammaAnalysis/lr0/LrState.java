@@ -22,6 +22,12 @@ public class LrState {
      */
     int stateIndex;
 
+    public LrState(ArrayList<LrProject> coreItems, ArrayList<LrProject> closureItems, int stateIndex) {
+        this.coreItems = coreItems;
+        this.closureItems = closureItems;
+        this.stateIndex = stateIndex;
+    }
+
     public LrState() {
         coreItems = new ArrayList<>();
         closureItems = new ArrayList<>();

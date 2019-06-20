@@ -33,8 +33,16 @@ class LrProject {
         this.dotPointer++;
     }
 
+    public Character dotPointerNext() {
+        if (isDotLast()) {
+            return null;
+        }
+        return rightSide.charAt(dotPointer);
+    }
+
     /**
      * 比较两个项目是否相等
+     *
      * @param lrProject 项目
      * @return 返回是否相等
      */
