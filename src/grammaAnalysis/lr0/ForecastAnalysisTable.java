@@ -5,4 +5,5 @@ package grammaAnalysis.lr0;
  * @author wdl
  */
 public class ForecastAnalysisTable {
+
 }

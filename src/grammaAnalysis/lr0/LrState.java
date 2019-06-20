@@ -22,23 +22,15 @@ public class LrState {
      */
     int stateIndex;
 
-    public LrState(ArrayList<LrProject> coreItems, ArrayList<LrProject> closureItems, int stateIndex) {
-        this.coreItems = coreItems;
-        this.closureItems = closureItems;
-        this.stateIndex = stateIndex;
-    }
-
     public LrState() {
         coreItems = new ArrayList<>();
         closureItems = new ArrayList<>();
     }
 
-    public void addCoreItem(LrProject coreItem) {
-        this.coreItems.add(coreItem);
-    }
-
-    public void addClosureItem(LrProject closureItem) {
-        this.closureItems.add(closureItem);
+    public LrState(ArrayList<LrProject> coreItems, ArrayList<LrProject> closureItems, int stateIndex) {
+        this.coreItems = coreItems;
+        this.closureItems = closureItems;
+        this.stateIndex = stateIndex;
     }
 
     /**
@@ -51,7 +43,6 @@ public class LrState {
         if (this.coreItems.size() != coreItems.size()) {
             return false;
         }
-
         for (int i = 0; i < this.coreItems.size(); i++) {
             if (!this.coreItems.get(i).isEqual(coreItems.get(i))) {
                 return false;

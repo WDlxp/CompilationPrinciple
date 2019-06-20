@@ -33,10 +33,11 @@ class LrProject {
         this.dotPointer++;
     }
 
+    /**
+     * 获取原点.后面的字符
+     * @return 原点.后面的字符
+     */
     public Character dotPointerNext() {
-        if (isDotLast()) {
-            return null;
-        }
         return rightSide.charAt(dotPointer);
     }
 

@@ -30,21 +30,20 @@ public class TestMain {
                 lrStates) {
             ArrayList<LrProject> coreItems = state.coreItems;
             ArrayList<LrProject> closureItems = state.closureItems;
-            System.out.println("状态"+state.stateIndex);
+            System.out.println("状态" + state.stateIndex);
             for (LrProject lrProject :
                     coreItems) {
-                System.out.println(lrProject.leftSide + "-->" + lrProject.rightSide+lrProject.dotPointer);
+                System.out.println(lrProject.leftSide + "-->" + lrProject.rightSide + lrProject.dotPointer);
             }
             for (LrProject lrProject :
                     closureItems) {
-                System.out.println(lrProject.leftSide + "-->" + lrProject.rightSide+lrProject.dotPointer);
+                System.out.println(lrProject.leftSide + "-->" + lrProject.rightSide + lrProject.dotPointer);
             }
         }
 
         for (IdentifyLivePrefixDFA.LrSide side :
                 lrSides) {
-            System.out.println(side.startState.stateIndex+"--"+side.way+"-->"+side.endState.stateIndex);
+            System.out.println(side.startState.stateIndex + "--" + side.way + "-->" + side.endState.stateIndex);
         }
-
     }
 }
