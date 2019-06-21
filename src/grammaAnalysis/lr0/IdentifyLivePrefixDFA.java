@@ -44,8 +44,8 @@ public class IdentifyLivePrefixDFA {
         //初始化首个核
         ArrayList<LrProject> coreItems = new ArrayList<>();
         coreItems.add(lrProjects.get(0).lrProjectClone());
-        LrState lrState = new LrState();
-        lrStates.add(new LrState(coreItems, getClosureItems(coreItems, lrProjects, nonTerminalSet), stateIndex));
+        LrState lrState = new LrState(coreItems, getClosureItems(coreItems, lrProjects, nonTerminalSet), stateIndex);
+        lrStates.add(lrState);
 
         //将状态放入栈中
         Stack<LrState> stateStack = new Stack<>();
