@@ -51,7 +51,7 @@ public class IdentifyLivePrefixDFA {
         Stack<LrState> stateStack = new Stack<>();
         stateStack.add(lrState);
         //记录一个状态中已经寻找过子状态的字符
-        ArrayList<Character> hasDo=new ArrayList<>();
+        ArrayList<Character> hasDo = new ArrayList<>();
         while (!stateStack.isEmpty()) {
             //获取栈中的项目
             LrState lrState1 = stateStack.pop();
@@ -211,32 +211,16 @@ public class IdentifyLivePrefixDFA {
             return lrStates;
         }
 
-        public void setLrStates(ArrayList<LrState> lrStates) {
-            this.lrStates = lrStates;
-        }
-
         public ArrayList<LrSide> getLrSides() {
             return lrSides;
-        }
-
-        public void setLrSides(ArrayList<LrSide> lrSides) {
-            this.lrSides = lrSides;
         }
 
         public HashSet<Character> getTerminatorSet() {
             return terminatorSet;
         }
 
-        public void setTerminatorSet(HashSet<Character> terminatorSet) {
-            this.terminatorSet = terminatorSet;
-        }
-
         public HashSet<Character> getNonTerminalSet() {
             return nonTerminalSet;
-        }
-
-        public void setNonTerminalSet(HashSet<Character> nonTerminalSet) {
-            this.nonTerminalSet = nonTerminalSet;
         }
     }
 
