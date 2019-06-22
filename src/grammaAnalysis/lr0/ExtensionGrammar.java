@@ -27,19 +27,17 @@ public class ExtensionGrammar {
          * 非终结符集合
          */
         private HashSet<Character> nonTerminalSet;
-
         public Result() {
             productSet = new ArrayList<>();
             terminatorSet = new HashSet<>();
             nonTerminalSet = new HashSet<>();
         }
-
-        public Result(ArrayList<String> productSet, HashSet<Character> terminatorSet, HashSet<Character> nonTerminalSet) {
+        public Result(ArrayList<String> productSet, HashSet<Character> terminatorSet,
+                      HashSet<Character> nonTerminalSet) {
             this.productSet = productSet;
             this.terminatorSet = terminatorSet;
             this.nonTerminalSet = nonTerminalSet;
         }
-
         public ArrayList<String> getProductSet() {
             return productSet;
         }
@@ -98,5 +96,16 @@ public class ExtensionGrammar {
             }
         }
         return new Result(extensionProductSet, terminatorSet, nonTerminalSet);
+    }
+
+    /**
+     * 展示拓广文法
+     * @param result 拓广文法
+     */
+    static void showExtensionGrammar(Result result){
+        System.out.println("-------------拓广文法--------------");
+        System.out.println(result.getProductSet());
+        System.out.println(result.getNonTerminalSet());
+        System.out.println(result.getTerminatorSet());
     }
 }

@@ -21,7 +21,10 @@ public class ProductSetToCFG {
         char start;
         ArrayList<Product> productSet;
 
-        public CFG(HashSet<Character> terminatorSet, HashSet<Character> nonTerminatorSet, char start, ArrayList<Product> productSet) {
+        public CFG(HashSet<Character> terminatorSet,
+                   HashSet<Character> nonTerminatorSet,
+                   char start,
+                   ArrayList<Product> productSet) {
             this.terminatorSet = terminatorSet;
             this.nonTerminatorSet = nonTerminatorSet;
             this.start = start;

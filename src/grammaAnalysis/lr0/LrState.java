@@ -8,34 +8,25 @@ import java.util.ArrayList;
  * @author wdl
  */
 public class LrState {
-    /**
-     * 状态的核项目
-     */
+    /**状态的核项目*/
     ArrayList<LrProject> coreItems;
-    /**
-     * 核求闭包所得项目
-     */
+    /**核求闭包所得项目*/
     ArrayList<LrProject> closureItems;
 
-    /**
-     * 状态编号
-     */
+    /**状态编号*/
     int stateIndex;
 
     public LrState() {
         coreItems = new ArrayList<>();
         closureItems = new ArrayList<>();
     }
-
     public LrState(ArrayList<LrProject> coreItems, ArrayList<LrProject> closureItems, int stateIndex) {
         this.coreItems = coreItems;
         this.closureItems = closureItems;
         this.stateIndex = stateIndex;
     }
-
     /**
      * 比较核是否相等，也就比较两个状态是否相等
-     *
      * @param coreItems 核
      * @return 是否相等
      */

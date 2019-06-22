@@ -115,7 +115,6 @@ public class PredictionTable {
                     preTable[rowIndex][colIndex] = "ε";
                 }
             }
-
         }
         return new PreTableResult(preTable, terminatorSymbolMap, nonTerminatorSymbolMap, terminatorSet, rowSymbolSet, sError);
     }
@@ -141,7 +140,9 @@ public class PredictionTable {
          * @param rowSymbolSet 行对应的字符集
          * @param sError       错误指示码
          */
-        public PreTableResult(String[][] preTable, HashMap<Character, Integer> colSymbolMap, HashMap<Character, Integer> rowSymbolMap, HashSet<Character> colSymbolSet, ArrayList<Character> rowSymbolSet, int sError) {
+        public PreTableResult(String[][] preTable, HashMap<Character, Integer> colSymbolMap,
+                              HashMap<Character, Integer> rowSymbolMap, HashSet<Character> colSymbolSet,
+                              ArrayList<Character> rowSymbolSet, int sError) {
             this.preTable = preTable;
             this.colSymbolMap = colSymbolMap;
             this.rowSymbolMap = rowSymbolMap;

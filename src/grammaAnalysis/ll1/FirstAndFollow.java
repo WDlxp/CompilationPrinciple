@@ -72,7 +72,8 @@ public class FirstAndFollow {
             preFollowSize = nowFollowSize;
             //初始化这一次总的Follow集的大小
             nowFollowSize = 0;
-            // 规则三如果S->αB那么将Follow(S)加入到Follow(B),且如果First(B)中含有ε，则将Follow(S)加入到B之前一位的非终结符（如果是终结符无Follow集不需要加）
+            // 规则三如果S->αB那么将Follow(S)加入到Follow(B),且如果First(B)中含有ε，
+            // 则将Follow(S)加入到B之前一位的非终结符（如果是终结符无Follow集不需要加）
             for (int index = 0; index < productSet.size(); index++) {
                 //获取产生式
                 product = productSet.get(index);
@@ -217,7 +218,9 @@ public class FirstAndFollow {
      * @param left          需要求First集的产生式左侧
      * @return 放回First集
      */
-    private static HashSet<Character> getTotalFirst(ArrayList<ProductSetToCFG.Product> productSet, HashSet<Character> terminatorSet, HashMap<Character, Integer> symbolOfIndex, char left) {
+    private static HashSet<Character> getTotalFirst(
+            ArrayList<ProductSetToCFG.Product> productSet, HashSet<Character> terminatorSet,
+            HashMap<Character, Integer> symbolOfIndex, char left) {
         //初始化一个First集
         HashSet<Character> first = new HashSet<>();
         //获取当前求First集的产生式的下标
@@ -247,7 +250,9 @@ public class FirstAndFollow {
      * @param right         产生式右侧的某一项
      * @return 返回一项的First集
      */
-    private static HashSet<Character> getFirst(ArrayList<ProductSetToCFG.Product> productSet, HashSet<Character> terminatorSet, HashMap<Character, Integer> symbolOfIndex, char left, String right) {
+    private static HashSet<Character> getFirst(
+            ArrayList<ProductSetToCFG.Product> productSet, HashSet<Character> terminatorSet,
+            HashMap<Character, Integer> symbolOfIndex, char left, String right) {
         //初始化所求First集
         HashSet<Character> first = new HashSet<>();
         //获取第一个字符
@@ -283,7 +288,8 @@ public class FirstAndFollow {
                     tempFirst.remove('ε');
                     first.addAll(tempFirst);
                     //将该字符后面字符的First集加到所求项的First集中
-                    first.addAll(getFirst(productSet, terminatorSet, symbolOfIndex, right.substring(1).charAt(0), right.substring(1)));
+                    first.addAll(getFirst(productSet, terminatorSet, symbolOfIndex,
+                            right.substring(1).charAt(0), right.substring(1)));
                 }
                 //不含ε则将该First集直接加到所求项的First集中
                 else {

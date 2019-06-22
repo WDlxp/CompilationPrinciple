@@ -34,6 +34,9 @@ class LrProject {
         this.dotPointer = 0;
     }
 
+    /**
+     * 原点后移
+     */
     public void dotPointerPlus() {
         this.dotPointer++;
     }
@@ -46,7 +49,6 @@ class LrProject {
     Character dotPointerNext() {
         return rightSide.charAt(dotPointer);
     }
-
     /**
      * 比较两个项目是否相等
      *
@@ -54,16 +56,16 @@ class LrProject {
      * @return 返回是否相等
      */
     boolean isEqual(LrProject lrProject) {
-        return (this.leftSide == lrProject.leftSide) && (this.rightSide.equals(lrProject.rightSide)) && (this.dotPointer == lrProject.dotPointer);
+        return (this.leftSide == lrProject.leftSide)
+                && (this.rightSide.equals(lrProject.rightSide))
+                && (this.dotPointer == lrProject.dotPointer);
     }
-
     /**
      * 判断是否已经是规约项目
      */
     boolean isDotLast() {
         return dotPointer == lastIndex;
     }
-
     /**
      * 复制一个项目
      */

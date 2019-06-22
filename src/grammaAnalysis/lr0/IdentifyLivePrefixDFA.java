@@ -85,7 +85,8 @@ public class IdentifyLivePrefixDFA {
                         }
                         //不存在创建新的状态并入栈
                         if (!isHave) {
-                            LrState lrState2 = new LrState(core, getClosureItems(core, lrProjects, nonTerminalSet), ++stateIndex);
+                            LrState lrState2 = new LrState(
+                                    core, getClosureItems(core, lrProjects, nonTerminalSet), ++stateIndex);
                             lrStates.add(lrState2);
                             lrSides.add(new LrSide(lrState1, lrState2, ch));
                             stateStack.add(lrState2);
@@ -126,7 +127,8 @@ public class IdentifyLivePrefixDFA {
      * @param nonTerminalSet 非终结符集合
      * @return 核的闭包集合
      */
-    public static ArrayList<LrProject> getClosureItems(ArrayList<LrProject> coreItems, ArrayList<LrProject> lrProjects, HashSet<Character> nonTerminalSet) {
+    public static ArrayList<LrProject> getClosureItems(
+            ArrayList<LrProject> coreItems, ArrayList<LrProject> lrProjects, HashSet<Character> nonTerminalSet) {
         ArrayList<LrProject> closureItems = new ArrayList<>();
         //已经加入过的非终结符开头的字符
         ArrayList<Character> nonTerminalHasAdd = new ArrayList<>();
@@ -200,7 +202,8 @@ public class IdentifyLivePrefixDFA {
          */
         private HashSet<Character> nonTerminalSet;
 
-        public DFA(ArrayList<LrState> lrStates, ArrayList<LrSide> lrSides, HashSet<Character> terminatorSet, HashSet<Character> nonTerminalSet) {
+        public DFA(ArrayList<LrState> lrStates, ArrayList<LrSide> lrSides,
+                   HashSet<Character> terminatorSet, HashSet<Character> nonTerminalSet) {
             this.lrStates = lrStates;
             this.lrSides = lrSides;
             this.terminatorSet = terminatorSet;
@@ -243,6 +246,37 @@ public class IdentifyLivePrefixDFA {
             this.startState = startState;
             this.endState = endState;
             this.way = way;
+        }
+    }
+
+    /**
+     * 打印识别活前缀的DFA
+     *
+     * @param identifyLivePrefixDFA 识别活前缀的DFA
+     */
+    static void showDfa(DFA identifyLivePrefixDFA) {
+        System.out.println("-------------识别活前缀的DFA--------------");
+        ArrayList<LrState> lrStates = identifyLivePrefixDFA.getLrStates();
+        ArrayList<IdentifyLivePrefixDFA.LrSide> lrSides = identifyLivePrefixDFA.getLrSides();
+        System.out.println("状态集：");
+        for (LrState state :
+                lrStates) {
+            ArrayList<LrProject> coreItems = state.coreItems;
+            ArrayList<LrProject> closureItems = state.closureItems;
+            System.out.println("状态" + state.stateIndex);
+            for (LrProject lrProject :
+                    coreItems) {
+                System.out.println(lrProject.leftSide + "-->" + lrProject.rightSide + lrProject.dotPointer);
+            }
+            for (LrProject lrProject :
+                    closureItems) {
+                System.out.println(lrProject.leftSide + "-->" + lrProject.rightSide + lrProject.dotPointer);
+            }
+        }
+        System.out.println("边集：");
+        for (IdentifyLivePrefixDFA.LrSide side :
+                lrSides) {
+            System.out.println(side.startState.stateIndex + "--" + side.way + "-->" + side.endState.stateIndex);
         }
     }
 }
